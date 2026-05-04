@@ -1,0 +1,16 @@
+name = "ManifoldsMakie"
+uuid = "e3fc3f48-fa14-4bdb-8060-d9e96fcc2953"
+version = "0.1.0"
+authors = ["Ronny Bergmann <git@ronnybergmann.net>"]
+
+[workspace]
+projects = ["test", "docs"]
+
+[deps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
+
+[compat]
+Makie = "0.24"
+Manifolds = "0.11"
+julia = "1.10"
