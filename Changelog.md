@@ -8,3 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] unreleased
 
 Initial release.
+
+## Added
+
+* a `sphereplot(Manifolds.Sphere(2))` to start a plot with a sphere to put points on.
