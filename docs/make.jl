@@ -80,11 +80,13 @@ links = InterLinks(
 makedocs(;
     format = Documenter.HTML(;
         prettyurls = run_on_CI || ("--prettyurls" ∈ ARGS),
+        assets = ["assets/citations.css", "assets/link-icons.css"],
     ),
     authors = "Ronny Bergmann <ronny.bergmann@ntnu.no> and contributors.",
     sitename = "ManifoldsMakie.jl",
     pages = [
         "Home" => "index.md",
+        "Sphere(2)" => "sphere.md",
         "Changelog" => "changelog.md",
     ],
     plugins = [bib, links],
