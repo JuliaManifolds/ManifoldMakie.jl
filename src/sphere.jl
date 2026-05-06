@@ -47,3 +47,17 @@ end
 function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts)
     return Makie.convert_arguments(P, pts)
 end
+
+# For arrows3d(M, pts, vecs) we want to combine the classical scatter with arrows,
+# where we assume that vecs[i] is in the tangent space of pts[1]
+function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts, vecs)
+    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
+    return (
+        convert_arguments(Makie.PointBased(), pts)[1],
+        convert_arguments(Makie.PointBased(), vecs)[1],
+    )
+end
+
+# For lines(M, pts), we want to intercept and use separate lines of sampled geodesics between the points
+#
+#
