@@ -20,7 +20,7 @@ a[href^="https://juliamanifolds.github.io/Manifolds.jl/"]::before {
     margin-right: 4px;
     vertical-align: middle;
 }
-a[href^="https://docs.makie.org/stable/"]::before {
+a[href^="https://docs.makie.org/stable/"]::before, a[href^="https://makie.org"]::before {
     content: "";
     background-image: url('logo-makie.png');
     background-size: contain;
