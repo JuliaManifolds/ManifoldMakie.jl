@@ -26,9 +26,9 @@ jobs:
           cache-name: cache-test-references
         with:
           path: test/img
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('test/*.jl') }}
+          key: ${{ runner.os }}-${{ matrix.julia-version }}-${{ env.cache-name }}-${{ hashFiles('test/*.jl') }}
           restore-keys: |
-            ${{ runner.os }}-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.julia-version }}-${{ env.cache-name }}-
       - uses: julia-actions/julia-runtest@v1
         with:
           prefix: xvfb-run
