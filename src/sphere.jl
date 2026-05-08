@@ -2,11 +2,13 @@
     sphereplot(::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}; kwargs...)
 
 Draw the [`Sphere`](@extref `Manifolds.Sphere`)`(2)` as a (transparent) surface with an overlaid wireframe.
-Combine with [`scatter`](@extref Makie.scatter) to plot points or paths on it.
+This can be combined with
+* [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
+* [`arrows3d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors
+* [`geodesics`](@ref)`(M, pst)` and [`scattergeodesics`](@ref)`(M, pst)` to draw geodesics
 
 ```julia
 fig, ax, p = sphereplot(Manifolds.Sphere(2))
-scatter!(ax, Manifolds.Sphere(2), pts)
 ```
 """
 @recipe SpherePlot (M,) begin
@@ -24,25 +26,25 @@ scatter!(ax, Manifolds.Sphere(2), pts)
     Makie.mixin_generic_plot_attributes()...
 end
 
-function Makie.plot!(plot::SpherePlot{<:Tuple{Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}}})
+function Makie.plot!(p::SpherePlot{<:Tuple{Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}}})
     # create a new compute edge
     # with [:M, :wires] as input nodes (these must already exist)
     # with :sphere_mesh as the output node (this will be created)
     # running the computation defined in the do ... end block
     # where :M is M and :wires is mapped to n
-    map!(plot.attributes, [:M, :wires], :sphere_mesh) do M, n
+    map!(p.attributes, [:M, :wires], :sphere_mesh) do M, n
         return GeometryBasics.uv_normal_mesh(Tessellation(Makie.Sphere(Point3f(0), 1.0f0), n))
     end
     # A solid surface
     mesh!(
-        plot, plot.sphere_mesh;
-        color = plot.surfacecolor,
-        alpha = plot.surfacealpha,
+        p, p.sphere_mesh;
+        color = p.surfacecolor,
+        alpha = p.surfacealpha,
         transparency = true,
     )
     # a wireframe atop
-    wireframe!(plot, plot.sphere_mesh; color = plot.wirecolor, linewidth = plot.wirewidth, transparency = true)
-    return plot
+    wireframe!(p, p.sphere_mesh; color = p.wirecolor, linewidth = p.wirewidth, transparency = true)
+    return p
 end
 
 #

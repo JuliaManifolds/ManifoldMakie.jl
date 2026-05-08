@@ -14,6 +14,16 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
 
     @test_reference "img/sphere/scatter.png" fig
 
+    fig, ax, pl = sphereplot(M)
+    X = [log(M, s, r) for s in P]
+    vecs = Vec3f.(X)
+    arrows3d!(
+        ax, M, pts, vecs; color = :blue,
+        minshaftlength = 0, shaftlength = 0.99, shaftradius = 0.004, tipradius = 0.016, tiplength = 0.1,
+    )
+
+    @test_reference "img/sphere/arrows3.png" fig
+
     # Geodesics
     fig, ax, pl = sphereplot(M)
     p1, p2, p3 = [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]

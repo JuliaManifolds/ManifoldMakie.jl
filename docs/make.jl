@@ -89,7 +89,8 @@ makedocs(;
     pages = [
         "Home" => "index.md",
         "Geodesics" => "geodesics.md",
-        "2D Sphere" => "sphere.md",
+        "Sphere (2D)" => "sphere.md",
+        "Hyperbolic (2D&3D)" => "hyperbolic.md",
         "Changelog" => "changelog.md",
         "References" => "references.md",
     ],
