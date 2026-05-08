@@ -1,5 +1,5 @@
-name = "ManifoldsMakie"
-uuid = "e3fc3f48-fa14-4bdb-8060-d9e96fcc2953"
+name = "ManifoldMakie"
+uuid = "9d80ff41-dd3c-46f9-b125-88bb271360e5"
 version = "0.1.0"
 authors = ["Ronny Bergmann <git@ronnybergmann.net>"]
 

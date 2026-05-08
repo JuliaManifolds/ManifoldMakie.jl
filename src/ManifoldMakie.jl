@@ -1,4 +1,4 @@
-module ManifoldsMakie
+module ManifoldMakie
 
 using GeometryBasics
 using Manifolds
@@ -13,4 +13,4 @@ export Sphere
 export scatter, scatter!
 export geodesics, geodesics!
 export scattergeodesics, scattergeodesics!
-end # module ManifoldsMakie
+end # module ManifoldMakie

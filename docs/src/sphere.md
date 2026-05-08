@@ -6,7 +6,7 @@ To start a plot on a manifold, there is usually a `manifoldplot` function, here 
 to set up the figure and add here for example the sphere the data lives on.
 
 ```@example
-using Manifolds, ManifoldsMakie, GLMakie
+using Manifolds, ManifoldMakie, GLMakie
 
 M = Manifolds.Sphere(2)
 fig, ax, pl = sphereplot(M)
@@ -32,7 +32,7 @@ fig
 We can also use the [`geodesics`](@ref) and [`scattergeodesics`](@ref) functions here.
 
 ```@example
-using Manifolds, ManifoldsMakie, GLMakie
+using Manifolds, ManifoldMakie, GLMakie
 
 M = Manifolds.Sphere(2)
 fig, ax, pl = sphereplot(M)
@@ -48,5 +48,5 @@ fig
 ## Function reference
 
 ```@docs
-ManifoldsMakie.sphereplot
+ManifoldMakie.sphereplot
 ```

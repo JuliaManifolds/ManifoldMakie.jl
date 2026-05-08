@@ -1,5 +1,5 @@
-using Makie, Manifolds, ManifoldsMakie, Test
+using Makie, Manifolds, ManifoldMakie, Test
 
-@testset "ManifoldsMakie" begin
+@testset "ManifoldMakie" begin
 
 end

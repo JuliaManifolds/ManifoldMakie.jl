@@ -7,7 +7,7 @@ if "--help" ∈ ARGS
         """
         docs/make.jl
 
-        Render the `ManifoldsMakie.jl` documentation with optional arguments
+        Render the `ManifoldMakie.jl` documentation with optional arguments
 
         Arguments
         * `--help`              - print this help and exit without rendering the documentation
@@ -30,7 +30,7 @@ end
 
 using Documenter
 using DocumenterCitations, DocumenterInterLinks
-using Manifolds, Makie, ManifoldsMakie
+using Manifolds, Makie, ManifoldMakie
 
 function add_links(line::String, url::String = "https://github.com/JuliaManifolds/Manopt.jl")
     # replace issues (#XXXX) -> ([#XXXX](url/issue/XXXX))
@@ -85,7 +85,7 @@ makedocs(;
         example_size_threshold = 16 * 2^10,
     ),
     authors = "Ronny Bergmann <ronny.bergmann@ntnu.no> and contributors.",
-    sitename = "ManifoldsMakie.jl",
+    sitename = "ManifoldMakie.jl",
     pages = [
         "Home" => "index.md",
         "Geodesics" => "geodesics.md",
@@ -95,6 +95,6 @@ makedocs(;
     ],
     plugins = [bib, links],
 )
-deploydocs(; repo = "github.com/JuliaManifolds/ManifoldsMakie.jl", push_preview = true)
+deploydocs(; repo = "github.com/JuliaManifolds/ManifoldMakie.jl", push_preview = true)
 #back to main env
 Pkg.activate()
