@@ -82,7 +82,7 @@ makedocs(;
         prettyurls = run_on_CI || ("--prettyurls" ∈ ARGS),
         assets = ["assets/citations.css", "assets/link-icons.css"],
         size_threshold = 300 * 2^10,      # raise slightly 200 to 300 KiB
-        example_size_threshold =  16 * 2^10,
+        example_size_threshold = 16 * 2^10,
     ),
     authors = "Ronny Bergmann <ronny.bergmann@ntnu.no> and contributors.",
     sitename = "ManifoldsMakie.jl",

@@ -33,6 +33,8 @@ function Makie.plot!(p::Geodesics{<:Tuple{AM, V}}) where {AM <: Manifolds.Abstra
     for i in 1:(n - 1)
         p1 = points[i]
         p2 = points[i + 1]
+        # skip a line if a nan is present
+        (isnan(p1) || isnan(p2)) && break
         pts = shortest_geodesic(M, p1, p2, range(; start = 0.0, stop = 1.0, length = s))
         lines!(p, p.attributes, M, Point3f.(pts))
     end
