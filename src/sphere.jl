@@ -60,16 +60,29 @@ end
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
 # (and any other PointBased plot) work on a manifold via this overload.
 # We do not have to transform the points
-function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts)
+function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:AbstractVector}}
+    return Makie.convert_arguments(P, Point3f.(pts))
+end
+# we already have P3fs, just pass down
+function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:Point}}
     return Makie.convert_arguments(P, pts)
 end
 
 # For arrows3d(M, pts, vecs) we want to combine the classical scatter with arrows,
 # where we assume that vecs[i] is in the tangent space of pts[1]
-function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts, vecs)
+# (a) From Manifolds.jl
+function Makie.convert_arguments(
+        ::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V, vecs::W
+    ) where {V <: AbstractVector{<:AbstractVector}, W <: AbstractVector{<:AbstractVector}}
     #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
     return (
-        convert_arguments(Makie.PointBased(), pts)[1],
-        convert_arguments(Makie.PointBased(), vecs)[1],
+        convert_arguments(Makie.PointBased(), Point3f.(pts))[1], convert_arguments(Makie.PointBased(), Vec3f.(vecs))[1],
+    )
+end
+# (b) already in Point3f
+function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V, vecs::W) where {V <: AbstractVector{<:Point}, W <: AbstractVector{<:Vec}}
+    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
+    return (
+        convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
 end

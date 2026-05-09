@@ -2,11 +2,14 @@
 
 ## The 2D Hyperboloid
 
+For the hyperboloid model, points and tangent vectors are either represented by plain arrays
+or using the [`HyperboloidPoint](@extref `Manifolds.HyperboloidPoint`) and the [`HyperboloidTangentVector](@extref `Manifolds.HyperboloidTangentVector`). Here we illustrate both: For a scatter plot, we use arrays first
+
 ```@example
 using GLMakie, ManifoldMakie, Manifolds
 M = Hyperbolic(2)
 fig, ax, pl = hyperboloidplot(M)
-p = [0.0, 0.0, 1.0]
+p = [2.0, 0.0, sqrt(5)]
 q = [2.0, 2.0, 3.0]
 r = [2.0, -2.0, 3.0]
 pts = Point3f.([p, q, r])
@@ -18,9 +21,24 @@ arrows3d!(
     minshaftlength = 0, shaftlength=.99, shaftradius = 0.004,
     tipradius = 0.016, tiplength = 0.1,
 )
+update_cam!(ax.scene, Vec3d([7.0, 0.0, 1.0]), Vec3d([0.0,0.0,1.0]))
 fig
 ```
 
+And for the (generic) plot of geodesics between points we illustrate this with the typed points
+
+```@example
+using GLMakie, ManifoldMakie, Manifolds
+M = Hyperbolic(2)
+fig, ax, pl = hyperboloidplot(M)
+
+pts = HyperboloidPoint.([[2.0, 2.0, 3.0], [2.0, -2.0, 3.0], [1.5, 0.0, sqrt(3.25)]])
+geodesics!(ax, M, pts; linewidth = 2, color = :blue)
+pts = HyperboloidPoint.([[2.0, 2.0, 3.0], [2.0, -2.0, 3.0], [2.5, 0.0, sqrt(7.25)]])
+scattergeodesics!(ax, M, pts; linewidth = 3, color = :green, markersize = 16, closed = true)
+update_cam!(ax.scene, Vec3d([7.0, 0.0, 1.0]), Vec3d([0.0,0.0,1.0]))
+fig
+```
 ## The Poincaré Halfplane for 2D and 3D hyperbolic data
 
 ## The Poincaré disk and ball

@@ -85,26 +85,38 @@ end
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
 # (and any other PointBased plot) work on a manifold via this overload.
 # We do not have to transform the points
-function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts)
+function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:AbstractVector}}
+    return Makie.convert_arguments(P, Point3f.(pts))
+end
+function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:HyperboloidPoint}}
+    return Makie.convert_arguments(P, [Point3f(p.value) for p in pts])
+end
+# If we already have points, all is fine.
+function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:Point}}
     return Makie.convert_arguments(P, pts)
 end
-function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::Vector{<:HyperboloidPoint})
-    return Makie.convert_arguments(P, [p. value for p in pts])
-end
+
 
 # For arrows3d(M, pts, vecs) we want to combine the classical scatter with arrows,
 # where we assume that vecs[i] is in the tangent space of pts[1]
-function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts, vecs)
+function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::V, vecs::W) where {V <: AbstractVector{<:AbstractVector}, W <: AbstractVector{<:AbstractVector}}
+    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
+    return (
+        convert_arguments(Makie.PointBased(), Point3f.(pts))[1],
+        convert_arguments(Makie.PointBased(), Point3f.(vecs))[1],
+    )
+end
+function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::AbstractVector{<:HyperboloidPoint}, vecs::AbstractVector{<:HyperboloidTangentVector})
+    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
+    return (
+        convert_arguments(Makie.PointBased(), [Point3f(p.value) for p in pts])[1],
+        convert_arguments(Makie.PointBased(), [Point3f(v.value) for v in vecs])[1],
+    )
+end
+function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::V, vecs::W) where {V <: AbstractVector{<:Point}, W <: AbstractVector{<:Vec}}
     #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
     return (
         convert_arguments(Makie.PointBased(), pts)[1],
         convert_arguments(Makie.PointBased(), vecs)[1],
-    )
-end
-function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}, pts::Vector{<:HyperboloidPoint}, vecs::Vector{<:HyperboloidTangentVector})
-    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
-    return (
-        convert_arguments(Makie.PointBased(), [p.value for p in pts])[1],
-        convert_arguments(Makie.PointBased(), [v.value for v in vecs])[1],
     )
 end
