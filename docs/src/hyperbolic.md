@@ -12,8 +12,8 @@ fig, ax, pl = hyperboloidplot(M)
 p = [2.0, 0.0, sqrt(5)]
 q = [2.0, 2.0, 3.0]
 r = [2.0, -2.0, 3.0]
-pts = Point3f.([p, q, r])
-vecs = Vec3f.([log(M, p, q), log(M, q, p), log(M, r, p)])
+pts = [p, q, r]
+vecs = [log(M, p, q), log(M, q, p), log(M, r, p)]
 
 scatter!(ax, M, pts, markersize = 20, color=:green)
 arrows3d!(
@@ -42,3 +42,32 @@ fig
 ## The Poincaré Halfplane for 2D and 3D hyperbolic data
 
 ## The Poincaré disk and ball
+
+For the [Poincaré disc]() we can even plot 2D and 3D hyperbolic data.
+
+### 2D Hyperbolic data on the Poincaré disc
+
+```@example
+using GLMakie, ManifoldMakie, Manifolds
+M = Hyperbolic(2)
+fig, ax, pl = poincareballplot(M; surfacealpha = 0.5, surfaceboundary = 1)
+
+pts = PoincareBallPoint.([[0.0, 0.0], 1/sqrt(2) .* [0.8, -0.8], 1/sqrt(2) .* [0.8, 0.8], 1/sqrt(2) .* [-0.8, 0.8], 1/sqrt(2) .* [-0.8, -0.8]])
+vecs = [
+    log(M, pts[1], PoincareBallPoint([0.2,0.0])),
+    [log(M, p, pts[1]) for p in pts[2:end]]...
+]
+scatter!(ax, M, pts; color = :blue, markersize = 8)
+arrows2d!(ax, M, pts, vecs; color = :green)
+geodesics!(ax, M, pts[2:end]; closed=true, color = :orange)
+fig
+```
+
+### 3D Hyperbolic data and the Poincaré ball
+
+```@example
+using GLMakie, ManifoldMakie, Manifolds
+M = Hyperbolic(3)
+fig, ax, pl = poincareballplot(M)
+fig
+```

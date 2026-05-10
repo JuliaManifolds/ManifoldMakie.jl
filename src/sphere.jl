@@ -52,7 +52,7 @@ function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}};
         size = (1024, 1024), backgroundcolor = :white, show_axis = false, kwargs...
     )
-    fig = Figure(backgroundcolor = backgroundcolor, size = size, kwargs...)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, kwargs...)
     ax = LScene(fig[1, 1], show_axis = show_axis, kwargs...)
     pl = sphereplot!(ax, M; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)

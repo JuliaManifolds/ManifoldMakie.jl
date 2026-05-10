@@ -11,7 +11,9 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
     P = shortest_geodesic(M, p, q, 0:0.05:1.0)
     pts = Point3f.(P)
     scatter!(ax, M, pts; color = :green, markersize = 16)
-
+    @test_reference "img/sphere/scatter.png" fig
+    # our plots can convert themselves, so this should do the same
+    scatter!(ax, M, P; color = :green, markersize = 16)
     @test_reference "img/sphere/scatter.png" fig
 
     fig, ax, pl = sphereplot(M)
@@ -21,6 +23,14 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
         ax, M, pts, vecs; color = :blue,
         minshaftlength = 0, shaftlength = 0.99, shaftradius = 0.004, tipradius = 0.016, tiplength = 0.1,
     )
+    @test_reference "img/sphere/arrows3.png" fig
+
+    # Also check that the plots themselves convert, so this should di the same as the one before
+    fig, ax, pl = sphereplot(M)
+    arrows3d!(
+        ax, M, P, X; color = :blue,
+        minshaftlength = 0, shaftlength = 0.99, shaftradius = 0.004, tipradius = 0.016, tiplength = 0.1,
+    )
 
     @test_reference "img/sphere/arrows3.png" fig
 
@@ -28,7 +38,7 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
     fig, ax, pl = sphereplot(M)
     p1, p2, p3 = [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]
     p1b, p2b, = [1 / sqrt(2), 0, 1 / sqrt(2)], [0, 1 / sqrt(2), 1 / sqrt(2)]
-    geodesics!(ax, M, Point3f.([p1, p2, p3]); closed = true, color = :green, linewidth = 3)
-    scattergeodesics!(ax, M, Point3f.([p1b, p2b, p3]); closed = true, color = :blue, linewidth = 2, markersize = 12)
+    geodesics!(ax, M, [p1, p2, p3]; closed = true, color = :green, linewidth = 3)
+    scattergeodesics!(ax, M, [p1b, p2b, p3]; closed = true, color = :blue, linewidth = 2, markersize = 12)
     @test_reference "img/sphere/geodesics.png" fig
 end
