@@ -85,7 +85,7 @@ function hyperboloidplot(
         hidedecorations!(ax)
         hidespines!(ax)
     end
-    ax.azimuth = π/4
+    ax.azimuth = π / 4
     pl = hyperboloidplot!(ax, M; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
