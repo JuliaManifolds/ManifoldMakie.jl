@@ -39,7 +39,6 @@ scattergeodesics!(ax, M, pts; linewidth = 3, color = :green, markersize = 16, cl
 update_cam!(ax.scene, Vec3d([7.0, 0.0, 1.0]), Vec3d([0.0,0.0,1.0]))
 fig
 ```
-## The Poincaré Halfplane for 2D and 3D hyperbolic data
 
 ## The Poincaré disk and ball
 
@@ -79,9 +78,47 @@ update_cam!(ax.scene, Vec3d([3.0, -1.5, 1.0]), Vec3d([0.0,0.0,0.0]))
 fig
 ```
 
+## The Poincaré Halfspace
+
+### 2D Hyperbolic data on the Poincaré half plane
+
+```@example
+using GLMakie, ManifoldMakie, Manifolds
+M = Hyperbolic(2)
+fig, ax, pl = poincarehalfspaceplot(M)
+
+pts = PoincareHalfSpacePoint.([[0.0, 1.0], [-0.3, 0.2], [-0.6, 0.4], [0.6, 0.4], [0.3, 0.2]])
+vecs = [
+    log(M, pts[1], PoincareHalfSpacePoint([0.0, 0.6])), [log(M, p, pts[1]) for p in pts[2:end]]...,
+]
+scatter!(ax, M, pts; color = :blue, markersize = 8)
+arrows2d!(ax, M, pts, vecs; color = :green)
+geodesics!(ax, M, pts; closed=true, color = :orange)
+fig
+```
+
+### 3D Hyperbolic data on the Poincaré half space
+
+```@example
+using GLMakie, ManifoldMakie, Manifolds
+M = Hyperbolic(3)
+fig, ax, pl = poincarehalfspaceplot(M)
+
+pts = PoincareHalfSpacePoint.([[0.0, 0.0, 1.0], [0.0, -0.3, 0.2], [-0.6, 0.0, 0.4], [0.0, 0.6, 0.4], [0.3, 0.0, 0.2]])
+vecs = [
+    log(M, pts[1], PoincareHalfSpacePoint([0.0, 0.0, 0.8])), [log(M, p, pts[1]) for p in pts[2:end]]...,
+]
+scatter!(ax, M, pts; color = :blue, markersize = 8)
+arrows3d!(ax, M, pts, vecs; color = :green)
+geodesics!(ax, M, pts; closed=true, color = :orange)
+fig
+```
+
+
 ## Function reference
 
 ```@docs
 ManifoldMakie.hyperboloidplot
 ManifoldMakie.poincareballplot
+ManifoldMakie.poincarehalfspaceplot
 ```

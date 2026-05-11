@@ -72,4 +72,30 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
         geodesics!(ax, M, pts[2:end]; closed = true, color = :orange)
         @test_reference "img/hyperbolic/poincareball.png" fig
     end
+    @testset "Poincare half plane" begin
+        M = Hyperbolic(2)
+        fig, ax, pl = poincarehalfspaceplot(M)
+
+        pts = PoincareHalfSpacePoint.([[0.0, 1.0], [-0.3, 0.2], [-0.6, 0.4], [0.6, 0.4], [0.3, 0.2]])
+        vecs = [
+            log(M, pts[1], PoincareHalfSpacePoint([0.0, 0.6])), [log(M, p, pts[1]) for p in pts[2:end]]...,
+        ]
+        scatter!(ax, M, pts; color = :blue, markersize = 8)
+        arrows2d!(ax, M, pts, vecs; color = :green)
+        geodesics!(ax, M, pts; closed = true, color = :orange)
+        @test_reference "img/hyperbolic/halfplane.png" fig
+    end
+    @testset "Poincare half space" begin
+        M = Hyperbolic(3)
+        fig, ax, pl = poincarehalfspaceplot(M)
+
+        pts = PoincareHalfSpacePoint.([[0.0, 0.0, 1.0], [0.0, -0.3, 0.2], [-0.6, 0.0, 0.4], [0.0, 0.6, 0.4], [0.3, 0.0, 0.2]])
+        vecs = [
+            log(M, pts[1], PoincareHalfSpacePoint([0.0, 0.0, 0.8])), [log(M, p, pts[1]) for p in pts[2:end]]...,
+        ]
+        scatter!(ax, M, pts; color = :blue, markersize = 8)
+        arrows3d!(ax, M, pts, vecs; color = :green)
+        geodesics!(ax, M, pts; closed = true, color = :orange)
+        @test_reference "img/hyperbolic/halfspace.png" fig
+    end
 end
