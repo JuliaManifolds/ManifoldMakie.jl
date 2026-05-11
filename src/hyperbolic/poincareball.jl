@@ -69,7 +69,6 @@ function poincareballplot(
         aspect = Makie.DataAspect(), kwargs...
     )
     fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    # 2D plot so we need Axis not LScene (no clue why?!)
     ax = Axis(fig[1, 1])
     ax.aspect = aspect
     if !show_axis
@@ -84,10 +83,15 @@ end
 # Overwrite hyperboloidplot (as a bit of a hack) to remove axes and use the nice default sphere from the docs?
 function poincareballplot(
         M::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{3}}};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, kwargs...
     )
     fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = LScene(fig[1, 1], show_axis = show_axis)
+    ax = Axis3(fig[1, 1], aspect = aspect)
+    if !show_axis
+        hidedecorations!(ax)
+        hidespines!(ax)
+    end
+    ax.azimuth = π/4
     pl = poincareballplot!(ax, M; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end

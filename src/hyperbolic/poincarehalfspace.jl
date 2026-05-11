@@ -38,7 +38,6 @@ function poincarehalfspaceplot(
         kwargs...
     )
     fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    # 2D plot so we need Axis not LScene (no clue why?!)
     ax = Axis(fig[1, 1]; limits = limits)
     #we only have positive y values, so we set the spines accordingly to not show [:b]ottom
     hidespines!(ax, :b)

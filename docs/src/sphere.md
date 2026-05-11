@@ -18,7 +18,7 @@ pts = shortest_geodesic(M, p, q, 0:0.05:1.0)
 vecs = [log(M, s, r) for s in pts]
 
 scatter!(ax, M, pts; color = :green, markersize = 16)
-scatter!(ax, M, [Point3f(r),]; color = :orange, markersize = 16)
+scatter!(ax, M, [r,]; color = :orange, markersize = 16)
 arrows3d!(
     ax, M, pts, vecs; color = :blue,
     minshaftlength = 0, shaftlength=.99, shaftradius = 0.004, tipradius = 0.016, tiplength = 0.1,

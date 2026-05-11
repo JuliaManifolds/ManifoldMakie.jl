@@ -50,7 +50,7 @@ end
 # Overwrite sphereplot (as a bit of a hack) to remove axes and use the nice default sphere from the docs?
 function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :equal, kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, kwargs...
     )
     fig = Figure(; backgroundcolor = backgroundcolor, size = size)
     ax = Axis3(fig[1, 1], aspect = aspect)
@@ -58,6 +58,7 @@ function sphereplot(
         hidedecorations!(ax)
         hidespines!(ax)
     end
+    ax.azimuth = π/4
     pl = sphereplot!(ax, M; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
