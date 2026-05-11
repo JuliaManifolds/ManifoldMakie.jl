@@ -72,7 +72,7 @@ vecs = [
 scatter!(ax, M, pts; color = :blue, markersize = 8)
 arrows3d!(ax, M, pts, vecs; color = :green)
 geodesics!(ax, M, pts[2:end]; closed=true, color = :orange)
-ax.azimuth = π/4
+ax.azimuth = 0
 fig
 ```
 
