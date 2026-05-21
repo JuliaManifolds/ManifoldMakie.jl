@@ -88,11 +88,16 @@ makedocs(;
     sitename = "ManifoldMakie.jl",
     pages = [
         "Home" => "index.md",
-        "Geodesics" => "geodesics.md",
-        "Sphere (2D)" => "sphere.md",
-        "Hyperbolic (2D&3D)" => "hyperbolic.md",
-        "Changelog" => "changelog.md",
-        "References" => "references.md",
+        "General" => [
+            "Geodesics" => "geodesics.md",
+        ],
+        "Circle" => "circle.md",
+        "Hyperbolic (2D,3D)" => "hyperbolic.md",
+        "Sphere (1D, 2D)" => "sphere.md",
+        "Misc." => [
+            "Changelog" => "changelog.md",
+            "References" => "references.md",
+        ],
     ],
     plugins = [bib, links],
 )

@@ -2,6 +2,7 @@
     sphereplot(::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{n}}}; kwargs...)
 
 Draw the [`Sphere`](@extref `Manifolds.Sphere`)`(n)`, ``n=1,2`` as a (transparent) surface with an overlaid wireframe.
+
 This can be combined with
 * [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
 * [`arrows3d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors
@@ -30,7 +31,7 @@ for the cyclic data on ``𝕊^1`` embedded in ``ℝ^2``
     "linewidth of the wire (``𝕊^2``)"
     wirewidth = 0.5
     "Solid color of the surface (``𝕊^2``) or boundary (``𝕊^1``)."
-    surfacecolor = :gray
+    surfacecolor = :white
     "Surface alpha (0 = transparent, 1 = opaque)."
     surfacealpha = 0.33
     "thickness of the boundary surface (only ``𝕊^1``)"
