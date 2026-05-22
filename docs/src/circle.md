@@ -5,7 +5,28 @@ or as complex numbers of absolute value 1.
 
 ## The real-valued Circle
 
-TODO
+For signals on the circle, we can plot them in a usual scatter
+
+```@example
+using Manifolds, ManifoldMakie, GLMakie
+
+M = Manifolds.Circle(ℝ)
+fig, ax, pl = circleplot(M)
+
+x = 0:0.25:5
+y = (mod.((x./2).^2 .- 0.4 .+ π, 2π)) .- π
+y2 = (mod.((x).^2 .- 0.4 .+ π, 2π)) .- π
+
+lines!(ax, M, y; color = :green)
+scatter!(ax, M, x, y2; color = :green)
+fig
+```
+
+For images, we can also color them (automatically) in hue
+
+```@example
+# TODO
+```
 
 ## The complex circle
 

@@ -5,10 +5,13 @@
 Draw a plot for data on the [`Circle`](@extref `Manifolds.Circle`).
 For the real-valued case this is a plot on an interval [-π,π), for the complex case a circle in the complex plane.
 
+
 This can be combined with
 * [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
-* [`arrows3d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors
-* [`geodesics`](@ref)`(M, pst)` and [`scattergeodesics`](@ref)`(M, pst)` to draw geodesics
+* [`arrows2d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors (for the complex case)
+*
+* [`lines`](@ref)`(M, pst)` and [`scatterlines`](@ref)`(M, pst)` to signals (only on the real circle),
+  where jumps larger than ``π`` are not drawn
 
 ## Examples
 
@@ -25,6 +28,55 @@ fig, ax, p = circleplot(Manifolds.Circle(ℂ))
     linewidth = 2
     # add the other default plot attributes here as well
     Makie.mixin_generic_plot_attributes()...
+end
+
+# Real case
+function Makie.plot!(p::CirclePlot{<:Tuple{Manifolds.Circle{ℝ}}})
+    #Fake elements?
+    scatter!(p, Point3f(NaN))
+    return p
+end
+function circleplot(
+        M::Manifolds.Circle{ℝ};
+        size = (1024, 1024), backgroundcolor = :white, kwargs...
+    )
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
+    ax = Axis(
+        fig[1, 1];
+        yticks = ([-π, -π / 2, 0.0, π / 2, π], ["-π", L"-\frac{π}{2}", "0", L"\frac{π}{2}", L"π"]), limits = (nothing, (-π, π)),
+        kwargs...
+    )
+    ax.topspinecolor = :lightgray
+    hidespines!(ax, :r)
+    pl = circleplot!(ax, M; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+
+# For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
+# (and any other PointBased plot) work on a manifold via this overload.
+# We do not have to transform the points
+function Makie.convert_arguments(P::Makie.PointBased, M::Manifolds.Circle{ℝ}, pts::V) where {V <: AbstractVector{<:Real}}
+    # Remove vertical lines by adding NaN entries to stop lines
+    v = Point2f[]
+    n = length(pts)
+    for i in 1:n
+        push!(v, Point2f(i, pts[i]))
+        (i < n) && abs(pts[i] - pts[i + 1]) > π && push!(v, Point2f(NaN, NaN))
+    end
+    return Makie.convert_arguments(P, M, v)
+end
+function Makie.convert_arguments(P::Makie.PointBased, M::Manifolds.Circle{ℝ}, x, pts::V) where {V <: AbstractVector{<:Real}}
+    v = Point2f[]
+    n = length(pts)
+    for i in 1:n
+        push!(v, Point2f(x[i], pts[i]))
+        (i < n) && abs(pts[i] - pts[i + 1]) > π && push!(v, Point2f(NaN, NaN))
+    end
+    return Makie.convert_arguments(P, M, v)
+end
+# we already have P2fs, just pass down
+function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Circle{ℝ}, pts::V) where {V <: AbstractVector{<:Point}}
+    return Makie.convert_arguments(P, pts)
 end
 
 # Complex case
@@ -57,7 +109,7 @@ end
 function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Circle{ℂ}, pts::V) where {V <: AbstractVector{<:Complex}}
     return Makie.convert_arguments(P, [ Point2f(real(p), imag(p)) for p in pts])
 end
-# we already have P3fs, just pass down
+# we already have Point2fs, just pass down
 function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Circle{ℂ}, pts::V) where {V <: AbstractVector{<:Point}}
     return Makie.convert_arguments(P, pts)
 end
