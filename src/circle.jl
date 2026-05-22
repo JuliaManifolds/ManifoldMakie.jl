@@ -10,7 +10,7 @@ This can be combined with
 * [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
 * [`arrows2d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors (for the complex case)
 *
-* [`lines`](@ref)`(M, pst)` and [`scatterlines`](@ref)`(M, pst)` to signals (only on the real circle),
+* [`lines`](@extref Makie.lines)`(M, pst)` and [`scatterlines`](@extref Makie.scatterlines)`(M, pst)` to signals (only on the real circle),
   where jumps larger than ``π`` are not drawn
 
 ## Examples

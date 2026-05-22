@@ -49,3 +49,9 @@ scatter!(ax, M, pts; color = :green, markersize = 16)
 scatter!(ax, M, [r,]; color = :orange, markersize = 16)
 fig
 ```
+
+## Function reference
+
+```@docs
+ManifoldMakie.circleplot
+```
