@@ -106,8 +106,8 @@ end
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
 # (and any other PointBased plot) work on a manifold via this overload.
 # We do not have to transform the points
-function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Circle{ℂ}, pts::V) where {V <: AbstractVector{<:Complex}}
-    return Makie.convert_arguments(P, [ Point2f(real(p), imag(p)) for p in pts])
+function Makie.convert_arguments(P::Makie.PointBased, M::Manifolds.Circle{ℂ}, pts::V) where {V <: AbstractVector{<:Complex}}
+    return Makie.convert_arguments(P, M, [ Point2f(real(p), imag(p)) for p in pts])
 end
 # we already have Point2fs, just pass down
 function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Circle{ℂ}, pts::V) where {V <: AbstractVector{<:Point}}
@@ -118,12 +118,11 @@ end
 # where we assume that vecs[i] is in the tangent space of pts[1]
 # (a) From Manifolds.jl
 function Makie.convert_arguments(
-        ::Makie.ArrowLike, ::Manifolds.Circle{ℂ}, pts::V, vecs::W
+        P::Makie.ArrowLike, M::Manifolds.Circle{ℂ}, pts::V, vecs::W
     ) where {V <: AbstractVector{<:Complex}, W <: AbstractVector{<:Complex}}
     #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jl
-    return (
-        convert_arguments(Makie.PointBased(), [ Point2f(real(p), imag(p)) for p in pts])[1],
-        convert_arguments(Makie.PointBased(), [ Vec2f(real(v), imag(v)) for v in vecs])[1],
+    return Makie.convert_arguments(
+        P, M, [ Point2f(real(p), imag(p)) for p in pts], [ Vec2f(real(v), imag(v)) for v in vecs],
     )
 end
 # (b) already in Point2f / Vec2f

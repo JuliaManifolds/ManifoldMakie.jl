@@ -105,16 +105,16 @@ end
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
 # (and any other PointBased plot) work on a manifold via this overload.
 # We do not have to transform the points
-function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V) where {V <: AbstractVector{<:AbstractVector}}
-    return Makie.convert_arguments(P, Point2f.(pts))
+function Makie.convert_arguments(P::Makie.PointBased, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V) where {V <: AbstractVector{<:AbstractVector}}
+    return Makie.convert_arguments(P, M, Point2f.(pts))
 end
 # we already have P3fs, just pass down
 function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V) where {V <: AbstractVector{<:Point}}
     return Makie.convert_arguments(P, pts)
 end
 # S2
-function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:AbstractVector}}
-    return Makie.convert_arguments(P, Point3f.(pts))
+function Makie.convert_arguments(P::Makie.PointBased, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:AbstractVector}}
+    return Makie.convert_arguments(P, M, Point3f.(pts))
 end
 # we already have P3fs, just pass down
 function Makie.convert_arguments(P::Makie.PointBased, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V) where {V <: AbstractVector{<:Point}}
@@ -133,9 +133,10 @@ function Makie.convert_arguments(
     )
 end
 # (b) already in Point2f
-function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V, vecs::W) where {V <: AbstractVector{<:Point}, W <: AbstractVector{<:Vec}}
+function Makie.convert_arguments(::Makie.ArrowLike, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V, vecs::W) where {V <: AbstractVector{<:Point}, W <: AbstractVector{<:Vec}}
     #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
-    return (
+    return Makie.convert_arguments(
+        P, M,
         convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
 end
