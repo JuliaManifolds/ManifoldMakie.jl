@@ -125,18 +125,14 @@ end
 # where we assume that vecs[i] is in the tangent space of pts[1]
 # (a) From Manifolds.jl
 function Makie.convert_arguments(
-        ::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V, vecs::W
+        P::Makie.ArrowLike, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V, vecs::W
     ) where {V <: AbstractVector{<:AbstractVector}, W <: AbstractVector{<:AbstractVector}}
-    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
-    return (
-        convert_arguments(Makie.PointBased(), Point2f.(pts))[1], convert_arguments(Makie.PointBased(), Vec2f.(vecs))[1],
-    )
+    return Makie.convert_arguments(P, M, Point2f.(pts), Vec2f.(vecs))
 end
 # (b) already in Point2f
-function Makie.convert_arguments(::Makie.ArrowLike, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V, vecs::W) where {V <: AbstractVector{<:Point}, W <: AbstractVector{<:Vec}}
+function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, pts::V, vecs::W) where {V <: AbstractVector{<:Point}, W <: AbstractVector{<:Vec}}
     #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
-    return Makie.convert_arguments(
-        P, M,
+    return (
         convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
 end
@@ -145,12 +141,9 @@ end
 # where we assume that vecs[i] is in the tangent space of pts[1]
 # (a) From Manifolds.jl
 function Makie.convert_arguments(
-        ::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V, vecs::W
+        P::Makie.ArrowLike, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V, vecs::W
     ) where {V <: AbstractVector{<:AbstractVector}, W <: AbstractVector{<:AbstractVector}}
-    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jlr
-    return (
-        convert_arguments(Makie.PointBased(), Point3f.(pts))[1], convert_arguments(Makie.PointBased(), Vec3f.(vecs))[1],
-    )
+    return Makie.convert_arguments(P, M, Point3f.(pts), Vec3f.(vecs))
 end
 # (b) already in Point3f
 function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, pts::V, vecs::W) where {V <: AbstractVector{<:Point}, W <: AbstractVector{<:Vec}}
