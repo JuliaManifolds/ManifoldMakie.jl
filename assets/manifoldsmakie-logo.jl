@@ -10,7 +10,7 @@
 
 using GLMakie
 using LinearAlgebra
-using Colors
+using Colors, FileIO, Images
 using Manifolds
 
 # ── Makie gradient colours ────────────────────────────────────────────────────
@@ -30,13 +30,13 @@ const COLOR_VERTICES = [MAKIE_YELLOW, MAKIE_BLUE, MAKIE_RED]
 
 # ── Settings ──────────────────────────────────────────────────────────────────
 
+const DARK_MODE = true
 const GEO_LINEWIDTH = 35.0
 const MESH_LINEWIDTH = 5
 const GEO_OPACITY = DARK_MODE ? 0.66 : 0.5
 const MESH_OPACITY = DARK_MODE ? 0.7 : 0.5
 const CAP_OPACITY = 1.0
 const R = π / 5
-const DARK_MODE = true
 
 # ── Sphere geometry ───────────────────────────────────────────────────────────
 
@@ -207,9 +207,43 @@ limits!(ax, lim_lo, lim_hi, lim_lo, lim_hi, lim_lo, lim_hi)
 
 display(fig)
 
-# Save:
-if DARK_MODE
-    save("logo_dark.png", fig; px_per_unit = 2)
-else
-    save("logo.png", fig; px_per_unit = 2)
+name = DARK_MODE ? "logo_dark" : "logo"
+save(name * ".png", fig; px_per_unit = 8)
+
+img = load(name * ".png")  # Array of RGB/RGBA pixels
+# Convert to RGBA
+img_rgba = RGBA.(img)
+
+# Replace background colour with transparent
+# Use white background for cleanest keying (no dark halo around colored caps)
+bg = DARK_MODE ? RGBA(colorant"black") : RGBA(colorant"white")
+tol = 0.03
+
+
+img_transparent = map(img_rgba) do px
+    dist = abs(red(px) - red(bg)) + abs(green(px) - green(bg)) + abs(blue(px) - blue(bg))
+    dist < tol ? RGBA(red(px), green(px), blue(px), 0.0) : px
 end
+
+# ── 3. Tight crop ────────────────────────────────────────────────────────────
+
+# Find rows and columns that contain at least one non-transparent pixel
+α_mat = alpha.(img_transparent)          # matrix of alpha values
+row_any = vec(any(α_mat .> 0, dims = 2))   # true for each row with content
+col_any = vec(any(α_mat .> 0, dims = 1))   # true for each column with content
+
+row_min, row_max = findfirst(row_any), findlast(row_any)
+col_min, col_max = findfirst(col_any), findlast(col_any)
+
+# Optionally: add a small padding (in pixels) so nothing is flush against the edge
+pad = 8
+row_min = max(1, row_min - pad)
+row_max = min(size(img_transparent, 1), row_max + pad)
+col_min = max(1, col_min - pad)
+col_max = min(size(img_transparent, 2), col_max + pad)
+
+img_cropped = img_transparent[row_min:row_max, col_min:col_max]
+img_orig_cropped = img[row_min:row_max, col_min:col_max]
+
+save(name * ".png", img_orig_cropped)
+save(name * "_transparent.png", img_cropped)
