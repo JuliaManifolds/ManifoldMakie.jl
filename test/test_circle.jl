@@ -32,12 +32,12 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
         img = sym_rem.(ManoptExamples.artificialIn_SAR_image(256))
         M = Manifolds.Circle(ℝ)
         fig, ax, pl = circleimage(M)
-        image!(ax, M, img; colormap = :hsv)
+        image!(ax, M, img)
         @test_reference "img/circle/image.png" fig
 
         # also works with ranges x and y
         fig, ax, pl = circleimage(M)
-        image!(ax, M, (1, 128), (1, 128), img; colormap = :hsv)
+        image!(ax, M, (1, 128), (1, 128), img)
         @test_reference "img/circle/image.png" fig
     end
 end

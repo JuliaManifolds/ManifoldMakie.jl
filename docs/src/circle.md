@@ -29,11 +29,11 @@ using Manifolds, ManifoldMakie, ManoptExamples, GLMakie
 img = sym_rem.(ManoptExamples.artificialIn_SAR_image(128))
 M = Manifolds.Circle(ℝ)
 fig, ax, pl = circleimage(M)
-image!(ax, M, img; colormap = :hsv)
+image!(ax, M, img)
 fig
 ```
 
-where for now you have to specify the `colormap = ` still in the image command.
+where the default colormap for these plots is changed to `:hsv`.
 
 ## The complex circle
 

@@ -165,6 +165,8 @@ function circleimage(
     ax = Axis(
         fig[1, 1]; aspect = aspect, kwargs...
     )
+    # This overwrites the default for a specific recipe with a higher priority:
+    ax.scene.theme[:Image] = Attributes(colormap = :hsv)
     Colorbar(
         fig[1, 2];
         limits = (-π, π),
