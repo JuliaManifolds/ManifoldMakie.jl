@@ -1,6 +1,6 @@
 # ManifoldsMakie.jl logo
 #
-# Created as a mix between the descriptoin / code at
+# Created as a mix between the description / code at
 # jkrumbiegel.com/pages/2024-05-03-makie-logo
 # and the code in TikZ for the Manifolds.jl logo at
 # github.com/JuliaManifolds/Manifolds.jl/blob/master/logo/logo.tex
