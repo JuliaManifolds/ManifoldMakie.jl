@@ -37,7 +37,7 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
 
         # also works with ranges x and y
         fig, ax, pl = circleimage(M)
-        image!(ax, M, (1,128), (1,128), img; colormap = :hsv)
+        image!(ax, M, (1, 128), (1, 128), img; colormap = :hsv)
         @test_reference "img/circle/image.png" fig
     end
 end

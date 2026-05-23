@@ -26,7 +26,7 @@ For images, we can also color them (automatically) in hue
 ```@example
 using Manifolds, ManifoldMakie, ManoptExamples, GLMakie
 
-img = sym_rem.(ManoptExamples.artificialIn_SAR_image(256))
+img = sym_rem.(ManoptExamples.artificialIn_SAR_image(128))
 M = Manifolds.Circle(ℝ)
 fig, ax, pl = circleimage(M)
 image!(ax, M, img; colormap = :hsv)
