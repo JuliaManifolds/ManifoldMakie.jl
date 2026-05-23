@@ -11,6 +11,7 @@ Initial release.
 
 ## Added
 
+* a `circleimage(Manifold.Circle(ℝ))` to plot angle-valued image data
 * a `circleplot(Manifolds.Circle(𝔽))` for the real and complex circle representation
 * a `sphereplot(Manifolds.Sphere(n))` for `n=1,2` to start a plot with a sphere to put points on.
 * a `hyperboloidplot(Hyperbolic(n))` for `n=2,3` to start a plot in the hyperboloid model.
