@@ -9,7 +9,6 @@ For the real-valued case this is a plot on an interval [-π,π), for the complex
 This can be combined with
 * [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
 * [`arrows2d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors (for the complex case)
-*
 * [`lines`](@extref Makie.lines)`(M, pst)` and [`scatterlines`](@extref Makie.scatterlines)`(M, pst)` to signals (only on the real circle),
   where jumps larger than ``π`` are not drawn
 
@@ -131,4 +130,60 @@ function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Circle{ℂ}, pts
     return (
         convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
+end
+
+"""
+    circleimage(::Manifolds.Circle{ℝ}; kwargs...)
+
+Start a plot for 2D data with values on the [`Circle`](@extref `Manifolds.Circle`)
+represented in angles an interval [-π,π).
+
+This can be combined with
+* [`image`](@extref `Makie.image`)`(M, img)` to show the image of the data.
+
+## Examples
+
+```julia
+fig, ax, p = circleimage(Manifolds.Circle(ℂ))
+```
+"""
+@recipe CircleImage (M,) begin
+    Makie.mixin_generic_plot_attributes()...
+end
+
+# Real case
+function Makie.plot!(p::CircleImage{<:Tuple{Manifolds.Circle{ℝ}}})
+    #Fake elements?
+    scatter!(p, Point3f(NaN))
+    return p
+end
+function circleimage(
+        M::Manifolds.Circle{ℝ};
+        size = (1024, 1024), backgroundcolor = :white, aspect = Makie.DataAspect(), kwargs...
+    )
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
+    ax = Axis(
+        fig[1, 1]; aspect = aspect, kwargs...
+    )
+    Colorbar(
+        fig[1, 2];
+        limits = (-π, π),
+        colormap = :hsv,
+        ticks = ([-π, -π / 2, 0.0, π / 2, π], ["-π", L"-\frac{π}{2}", "0", L"\frac{π}{2}", L"π"]),
+    )
+    pl = circleimage!(ax, M; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+
+# For just image data without x and y
+function Makie.convert_arguments(
+        P::Makie.ImageLike, M::Manifolds.Circle{ℝ}, img::I
+    ) where {I <: AbstractMatrix{<:Real}}
+    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jl
+    return Makie.convert_arguments(P, Manifolds.sym_rem.(img))
+end
+# For image data with axis x and y
+function Makie.convert_arguments(P::Makie.ImageLike, ::Manifolds.Circle{ℝ}, x, y, img::I) where {I <: AbstractMatrix{<:Real}}
+    #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jl
+    return Makie.convert_arguments(P, x, y, Manifolds.sym_rem.(img))
 end

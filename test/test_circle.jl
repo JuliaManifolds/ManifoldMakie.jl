@@ -1,4 +1,4 @@
-using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
+using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
 
 @testset "Plotting data on the Circle" begin
     @testset "On the complex circle" begin
@@ -27,5 +27,17 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
         lines!(ax, M, y; color = :green)
         scatter!(ax, M, x, y2; color = :green)
         @test_reference "img/circle/real-scatter.png" fig
+    end
+    @testset "Circle Image" begin
+        img = sym_rem.(ManoptExamples.artificialIn_SAR_image(256))
+        M = Manifolds.Circle(ℝ)
+        fig, ax, pl = circleimage(M)
+        image!(ax, M, img; colormap = :hsv)
+        @test_reference "img/circle/image.png" fig
+
+        # also works with ranges x and y
+        fig, ax, pl = circleimage(M)
+        image!(ax, M, (1,128), (1,128), img; colormap = :hsv)
+        @test_reference "img/circle/image.png" fig
     end
 end

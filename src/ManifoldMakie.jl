@@ -19,6 +19,7 @@ export Sphere
 export scatter, scatter!
 export geodesics, geodesics!
 export circleplot, circleplot!
+export circleimage, circleimage!
 export hyperboloidplot, hyperboloidplot!
 export poincareballbplot, poincareballbplot!
 export poincarehalfspaceplot, poincarehalfspaceplot!

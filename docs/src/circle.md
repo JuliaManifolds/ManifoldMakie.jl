@@ -10,13 +10,12 @@ For signals on the circle, we can plot them in a usual scatter
 ```@example
 using Manifolds, ManifoldMakie, GLMakie
 
-M = Manifolds.Circle(ℝ)
-fig, ax, pl = circleplot(M)
-
 x = 0:0.25:5
 y = (mod.((x./2).^2 .- 0.4 .+ π, 2π)) .- π
 y2 = (mod.((x).^2 .- 0.4 .+ π, 2π)) .- π
 
+M = Manifolds.Circle(ℝ)
+fig, ax, pl = circleplot(M)
 lines!(ax, M, y; color = :green)
 scatter!(ax, M, x, y2; color = :green)
 fig
@@ -25,8 +24,16 @@ fig
 For images, we can also color them (automatically) in hue
 
 ```@example
-# TODO
+using Manifolds, ManifoldMakie, ManoptExamples, GLMakie
+
+img = sym_rem.(ManoptExamples.artificialIn_SAR_image(256))
+M = Manifolds.Circle(ℝ)
+fig, ax, pl = circleimage(M)
+image!(ax, M, img; colormap = :hsv)
+fig
 ```
+
+where for now you have to specify the `colormap = ` still in the image command.
 
 ## The complex circle
 
@@ -53,5 +60,6 @@ fig
 ## Function reference
 
 ```@docs
+ManifoldMakie.circleimage
 ManifoldMakie.circleplot
 ```
