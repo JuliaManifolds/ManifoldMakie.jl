@@ -227,5 +227,5 @@ function Makie.convert_arguments(
     )
     return (M, x, y, img)
 end
-Makie.image(M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args; kwargs...) = spheredataimage(M, args...; kwargs...)
-Makie.image!(ax, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args; kwargs...) = spheredataimage!(ax, M, args...; kwargs...)
+Makie.image(M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args...; kwargs...) = spheredataimage(M, args...; kwargs...)
+Makie.image!(ax, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args...; kwargs...) = spheredataimage!(ax, M, args...; kwargs...)
