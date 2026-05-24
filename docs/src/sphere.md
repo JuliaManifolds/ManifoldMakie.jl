@@ -82,14 +82,7 @@ using Manifolds, ManifoldMakie, ManoptExamples, GLMakie
 
 M = Manifolds.Sphere(2)
 img = ManoptExamples.artificial_S2_whirl_image()
-
-# temp
-fig = Figure()
-ax = Axis3(fig[1,1]; aspect = :data, elevation = π/2, azimuth = π/2)
-hidedecorations!(ax)
-hidespines!(ax)
-
-ManifoldMakie.spheredataimage!(ax, M, img)
+fig, ax, pl = image(M, img)
 fig
 ```
 
