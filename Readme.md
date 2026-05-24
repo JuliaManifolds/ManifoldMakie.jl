@@ -1,7 +1,7 @@
 <div align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/JuliaManifolds/ManifoldMakie.jl/raw/master/docs/src/assets/logo-text-readme-dark.png">
-      <img alt="ManifoldMakie.jl logo with text on the side" src="https://github.com/JuliaManifolds/ManifoldMakie.jl/raw/master/docs/src/assets/logo-text-readme.png">
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/JuliaManifolds/ManifoldMakie.jl/raw/main/docs/src/assets/logo-text-readme-dark.png">
+      <img alt="ManifoldMakie.jl logo with text on the side" src="https://github.com/JuliaManifolds/ManifoldMakie.jl/raw/main/docs/src/assets/logo-text-readme.png">
     </picture>
 </div>
 
