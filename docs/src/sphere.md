@@ -72,6 +72,28 @@ scattergeodesics!(ax, M, Point3f.([p1b, p2b, p3]); closed = true, color = :blue,
 fig
 ```
 
+## A sphere-valued image
+
+When dealing with a 2D array of data living on the sphere,
+for example a dataset of wind field directions, we can plot this as
+
+```@example
+using Manifolds, ManifoldMakie, ManoptExamples, GLMakie
+
+M = Manifolds.Sphere(2)
+img = ManoptExamples.artificial_S2_whirl_image()
+
+# temp
+fig = Figure()
+ax = Axis3(fig[1,1]; aspect = :data, elevation = π/2, azimuth = π/2)
+hidedecorations!(ax)
+hidespines!(ax)
+
+ManifoldMakie.spheredataimage!(ax, M, img)
+fig
+```
+
+
 ## Function reference
 
 ```@docs

@@ -152,3 +152,80 @@ function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Mani
         convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
 end
+
+#
+#
+# image!(ax, M, img) and image!(ax, M, x, y, img) to plot a sphere-values image as a quiver
+# not yet sure how to handle the image() case to do a 3D plot then, we will see.
+
+"""
+    image(M, x, y, image)
+    image(M, image)
+
+as an alias for
+
+    spheredataimage(M, x, y, image)
+    spheredataimage(M, image)
+
+Plots an image on a rectangle bounded by `x` and `y` (defaults to size of image).
+"""
+@recipe SphereDataImage (
+    M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}},
+    x::Makie.EndPoints,
+    y::Makie.EndPoints,
+    image::AbstractMatrix{<:AbstractVector{<:Real}},
+) begin
+    Makie.mixin_generic_plot_attributes()...
+    Makie.mixin_colormap_attributes()...
+    fxaa = false
+    colormap = :viridis
+end
+
+function Makie.plot!(
+        I::SphereDataImage{
+            <:Tuple{
+                <:Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}},
+                <:Makie.EndPoints,
+                <:Makie.EndPoints,
+                <:AbstractMatrix{<:AbstractVector},
+            },
+        }
+    )
+    # We use the four converted arguments as input nodes for our computation.
+    # These match the types in the tuple above, i.e. M;, x, y, img
+    input_nodes = [:M, :x, :y, :image]
+    # As outputs we want to obtain points and directions for an arrow 3D
+    output_nodes = [:gridpts, :gridves, :color_z]
+    # This will register a computation in the graph, which connects a new set of
+    # output_nodes to the given input_nodes in a way that can dynamically update.
+    map!(I.attributes, input_nodes, output_nodes) do manifold, xr, yr, image
+        pts = Point3f[]
+        vecs = Vec3f[]
+        colors = Float32[]
+        m, n = size(image)
+        for (i, xi) in enumerate(range(xr[1], xr[2]; length = m)), (j, yj) in enumerate(range(yr[1], yr[2]; length = n))
+            v = image[i, j]
+            push!(pts, Point3f(xi, yj, 0.0))
+            push!(vecs, Vec3f(v[1], v[2], v[3]))
+            # use z component / height for coloring
+            push!(colors, v[end])
+        end
+        return (pts, vecs, colors)
+    end
+    arrows3d!(I, I.attributes, I.gridpts, I.gridves; colormap = :viridis, color = I.color_z)
+    return I
+end
+function Makie.convert_arguments(
+        P::Type{<:SphereDataImage}, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, img::AbstractMatrix{<:AbstractVector}
+    )
+    m, n = size(img)
+    # We transpose as it is common for mages, the first direction is X, the second the y acis
+    return Makie.convert_arguments(P, M, Makie.EndPoints(1, m), Makie.EndPoints(1, n), img)
+end
+function Makie.convert_arguments(
+        P::Type{<:SphereDataImage}, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, x::Makie.EndPoints, y::Makie.EndPoints, img::AbstractMatrix{<:AbstractVector}
+    )
+    return (M, x, y, img)
+end
+Makie.image(M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args; kwargs...) = spheredataimage(M, args...; kwargs...)
+Makie.image!(ax, M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args; kwargs...) = spheredataimage!(ax, M, args...; kwargs...)
