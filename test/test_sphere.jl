@@ -66,7 +66,7 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
         @test_reference "img/sphere/S2-data1.png" fig1
         # temp – TODO: Setup-function for spherical data
         fig2 = Figure()
-        ax = Axis3(fig[1, 1]; aspect = :data, elevation = π / 2, azimuth = π / 2)
+        ax = Axis3(fig2[1, 1]; aspect = :data, elevation = π / 2, azimuth = π / 2)
         hidedecorations!(ax)
         hidespines!(ax)
         image!(ax, M, img)
