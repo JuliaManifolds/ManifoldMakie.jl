@@ -112,7 +112,6 @@ geodesics!(ax, M, pts; closed=true, color = :orange)
 fig
 ```
 
-
 ## Function reference
 
 ```@docs

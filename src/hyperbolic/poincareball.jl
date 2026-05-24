@@ -34,6 +34,8 @@ end
 
 # 2D case: Poincare disc: We draw a boundary in surfacecolor – using a circle
 function Makie.plot!(p::PoincareBallPlot{<:Tuple{Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}}})
+    # create a new compute edge
+    # with [:M] as input nodes (these must already exist)
     map!(p.attributes, [:M], :circle) do M
         return GeometryBasics.Circle(Point2f(0, 0), 1.0f0)
     end
