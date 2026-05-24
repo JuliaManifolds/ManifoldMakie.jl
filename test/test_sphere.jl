@@ -62,12 +62,14 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
     @testset "2D data of unit norm vectors" begin
         M = Manifolds.Sphere(2)
         img = ManoptExamples.artificial_S2_whirl_image()
-        # temp
-        fig = Figure()
+        fig1 = image(M, img)
+        @test_reference "img/sphere/S2-data1.png" fig1
+        # temp – TODO: Setup-function for spherical data
+        fig2 = Figure()
         ax = Axis3(fig[1, 1]; aspect = :data, elevation = π / 2, azimuth = π / 2)
         hidedecorations!(ax)
         hidespines!(ax)
         image!(ax, M, img)
-        @test_reference "img/sphere/S2-data.png" fig
+        @test_reference "img/sphere/S2-data2.png" fig2
     end
 end
