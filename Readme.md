@@ -1,4 +1,9 @@
-# ManifoldMakie.jl
+<div align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/JuliaManifolds/ManifoldMakie.jl/raw/master/docs/src/assets/logo-text-readme-dark.png">
+      <img alt="ManifoldMakie.jl logo with text on the side" src="https://github.com/JuliaManifolds/ManifoldMakie.jl/raw/master/docs/src/assets/logo-text-readme.png">
+    </picture>
+</div>
 
 [![docs][docs-dev-img]][docs-dev-url] [![CI][ci-img]][ci-url] [![runic][runic-img]][runic-url] [![codecov][codecov-img]][codecov-url]
 
