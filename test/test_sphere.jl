@@ -1,4 +1,4 @@
-using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
+using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
 
 @testset "Plots for data on the sphere" begin
     @testset "Plots on the 1-sphere" begin
@@ -58,5 +58,16 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
         geodesics!(ax, M, [p1, p2, p3]; closed = true, color = :green, linewidth = 3)
         scattergeodesics!(ax, M, [p1b, p2b, p3]; closed = true, color = :blue, linewidth = 2, markersize = 12)
         @test_reference "img/sphere/geodesics.png" fig
+    end
+    @testset "2D data of unit norm vectors" begin
+        M = Manifolds.Sphere(2)
+        img = ManoptExamples.artificial_S2_whirl_image()
+        # temp
+        fig = Figure()
+        ax = Axis3(fig[1, 1]; aspect = :data, elevation = π / 2, azimuth = π / 2)
+        hidedecorations!(ax)
+        hidespines!(ax)
+        image!(ax, M, img)
+        @test_reference "img/sphere/S2-data.png" fig
     end
 end

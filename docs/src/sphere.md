@@ -98,4 +98,5 @@ fig
 
 ```@docs
 ManifoldMakie.sphereplot
+ManifoldMakie.spheredataimage
 ```
