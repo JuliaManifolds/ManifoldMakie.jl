@@ -23,37 +23,28 @@ and ``λ_i``, ``i=1,…,n`` are the eigenvalues of the symmetric positive defini
     image::AbstractMatrix{<:AbstractMatrix{<:Real}},
 ) begin
     "scale eigenvalues globally"
-    scale_eigenvalues = 1.0
+    scale_ev = 1.0
+    "scale `:absolute` or `:relative`, i.e. after normalizing the larges Eigenvalue to be 1"
+    scale_mode = :absolute
     Makie.mixin_generic_plot_attributes()...
     Makie.mixin_colormap_attributes()...
 end
 
-# from a rotation matrix to a quaternion
-# https://discourse.julialang.org/t/plotting-an-ellipsoid-as-2d-surface-in-3d-given-the-principal-axes/60393/5
-function rot2quat(p)
-    qw2 = 1 + p[1,1] + p[2,2] + p[3,3]
-    if qw2 < 0
-        qw2 = -qw2
-    end
-    qw = sqrt(qw2)/2
-    qx = (p[3,2] - p[2,3])/(4qw)
-    qy = (p[1,3] - p[3,1])/(4qw)
-    qz = (p[2,1] - p[1,2])/(4qw)
-    SVector{4}(qx,qy,qz,qw)
-end
+#
+#
+# Helper for the coloring: Geometric anisotropy index, Moakher and Batchelor (2006)
 function geometric_anisotropy_index(p::AbstractMatrix)
     return geimetric_anisotropy_index(eigvals(p))
 end
 function geometric_anisotropy_index(λ::AbstractVector)
     n = length(λ)
     logλ = log.(λ)
-    AR = sqrt((n-1)/n * sum(logλ.^2) - 2/n * sum(logλ[i]*logλ[j] for i in 1:n for j in i+1:n))
+    AR = sqrt((n - 1) / n * sum(logλ .^ 2) - 2 / n * sum(logλ[i] * logλ[j] for i in 1:n for j in (i + 1):n))
     return AR / (1 + AR)
 end
 
 #
 # SPD(2) case
-
 
 
 function plot!(
@@ -90,7 +81,7 @@ function plot!(
         end
         return (pts, orientations, colors)
     end
-    scatter!(
+    return scatter!(
         I, I.attributes, I.gridpts;
         color = I.colors, marker = marker = :circle, #sadly a bit inconsistent, Makie.Circle(Point2f(0.0,0.0), 1.0) would have been nice
         markersize = I.scales, rotation = I.orientations,
@@ -102,7 +93,6 @@ end
 function Makie.convert_arguments(
         P::Type{<:SymmetricPositiveDefiniteDataImage}, M::Manifolds.SymmetricPositiveDefinite, img::AbstractMatrix{<:AbstractMatrix}
     )
-    @info "Hø?"
     m, n = size(img)
     # We transpose as it is common for mages, the first direction is X, the second the y acis
     return Makie.convert_arguments(P, M, Makie.EndPoints(1, m), Makie.EndPoints(1, n), img)
@@ -143,32 +133,44 @@ function Makie.plot!(
     )
     # We use the four converted arguments as input nodes for our computation.
     # These match the types in the tuple above, i.e. M;, x, y, img
-input_nodes = [:M, :x, :y, :image, :scale_eigenvalues]
+    input_nodes = [:M, :x, :y, :image, :scale_ev, :scale_mode]
     # As outputs we want to obtain points and directions for an arrow 3D
-output_nodes = [:gridpts, :scales, :orientations, :colors, :markershape, :markersize]
+    output_nodes = [:gridpts, :scales, :orientations, :colors]
     # This will register a computation in the graph, which connects a new set of
     # output_nodes to the given input_nodes in a way that can dynamically update.
-    map!(I.attributes, input_nodes, output_nodes) do manifold, xr, yr, image, es
+    map!(I.attributes, input_nodes, output_nodes) do manifold, xr, yr, image, es, em
         pts = Point3f[]
         scales = Vec3f[]
-        orientations = Vec4f[]
+        orientations = Vec3f[]
         colors = Float32[]
         m, n = size(image)
+        λ_max = 0.0
         for (i, xi) in enumerate(range(xr[1], xr[2]; length = m)), (j, yj) in enumerate(range(yr[1], yr[2]; length = n))
             p = image[i, j]
             λ, V = eigen(p)
+            λ_max = max(λ_max, maximum(λ))
             push!(pts, Point3f(xi, yj, 0.0))
             push!(scales, Vec3f(λ...))
-            push!(orientations, Vec4f(rot2quat(V)...))
+            @info "λ: $λ"
+            push!(orientations, V * [0.0, 0.0, 1.0])
             # use z component / height for coloring
             push!(colors, geometric_anisotropy_index(λ))
         end
-return (pts, scales, orientations, colors, Makie.Sphere(Point3f(0,0,0), es), es .* I.scales)
+        @info es
+        if em == :relative
+            # scale such that the larges axis is 1, i.e. by 1/λ_max,
+            es = es / λ_max
+        end
+        @info es
+        scales = es .* scales
+        return (pts, scales, orientations, colors)
     end
     meshscatter!(
         I, I.attributes, I.gridpts;
-#        color = I.colors, marker = I.markershape,
-#        markersize = I.scale_eigenvalues .*  I.scales, rotation = I.orientations,
+        color = I.colors,
+        marker = Makie.Sphere(Point3f(0, 0, 0), 1.0),
+        markersize = I.scales,
+        rotation = I.orientations,
     )
     return I
 end

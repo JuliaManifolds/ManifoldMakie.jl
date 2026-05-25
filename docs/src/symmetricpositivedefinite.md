@@ -11,11 +11,12 @@ the corresponding Eigenvectors ``v_1,…v_n`` form a basis of ``ℝ^n`` they can
 using GLMakie, LinearAlgebra, ManifoldMakie, Manifolds
 R(α) = [cos(α) sin(α); -sin(α) cos(α)]
 n = 20
-M = SymmetricPOsitiveDefinite(2)
+M = SymmetricPositiveDefinite(2)
 
 data = [ R(x+y)' * diagm([1.0 + x + y, 1.0/(1.0 + x + y)]) * R(x+y) for x ∈ range(0,1,n), y ∈ range(0,1,n)]
 
 # image(M, data)
+nothing
 ```
 
 ## Plotting Ellipsoids
@@ -24,7 +25,7 @@ data = [ R(x+y)' * diagm([1.0 + x + y, 1.0/(1.0 + x + y)]) * R(x+y) for x ∈ ra
 using GLMakie, LinearAlgebra, ManifoldMakie, Manifolds, ManoptExamples
 M = SymmetricPositiveDefinite(3)
 data = ManoptExamples.artificial_SPD_image(64);
-image(M, data)
+image(M, data; scale_ev = 2.0, scale_mode = :relative)
 ```
 
 ## Function Reference
