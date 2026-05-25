@@ -1,6 +1,10 @@
 using GLMakie, LinearAlgebra, ManifoldMakie, Manifolds, ManoptExamples, ReferenceTests, Test
 
 @testset "Plots for data of symmetric positive defninite matrices" begin
+    p = [1.0 0.5; 0.5 1.0]
+    λ = eigvals(p)
+    a = ManifoldMakie.geometric_anisotropy_index(p)
+    @test a == ManifoldMakie.geometric_anisotropy_index(λ)
     @testset "Plots for SPD(2) data" begin
         R(α) = [cos(α) -sin(α); sin(α) cos(α)]
         n = 32
@@ -12,7 +16,7 @@ using GLMakie, LinearAlgebra, ManifoldMakie, Manifolds, ManoptExamples, Referenc
         ax = Axis(fig2[1, 1], aspect = Makie.DataAspect())
         hidedecorations!(ax)
         hidespines!(ax)
-        image!(ax, M, data)
+        image!(ax, M, data; scale_ev = 2.0, scale_mode = :relative)
         @test_reference "img/symmetricpositivedefinite/SPD2-image2.png" fig2
     end
 
