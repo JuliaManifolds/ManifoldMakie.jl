@@ -9,11 +9,10 @@
 
 Plotting receipts for manifold-valued data.
 
-## Statement of need
 
-Ih [Manifolds.jl](https://juliamanifolds.github.io/Manifolds.jl/) as well as a bit in [Manopt.jl](https://manopjl.org) there exist a few methods to visualise data living on a [Riemannian manifold](https://en.wikipedia.org/wiki/Riemannian_manifold). These methods are a bit outdated and do not follow the idea of modularising implementations.
+When working with [Manifolds.jl](https://juliamanifolds.github.io/Manifolds.jl/), for example when running optimization algorithms on Manifolds with [Manopt.jl](https://manopjl.org) it can be helpful or instructive to visualise the result. For several data living on a [Riemannian manifold](https://en.wikipedia.org/wiki/Riemannian_manifold) there exist methods to visualize these.
 
-This package is an approach to renew these methods using plotting Receipts from [Makie.jl](https://docs.makie.org/stable/) to provide a unified approach to visualising manifold-valued data.
+This package is an approach to provide such methods [using plotting recipes](https://docs.makie.org/dev/explanations/recipes) from [Makie.jl](https://docs.makie.org/stable/) to provide a unified approach to visualising manifold-valued data.
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [docs-dev-url]: https://JuliaManifolds.github.io/ManifoldMakie.jl/dev/
