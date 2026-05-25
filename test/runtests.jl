@@ -4,4 +4,5 @@ using Makie, Manifolds, ManifoldMakie, Test
     include("test_circle.jl")
     include("test_sphere.jl")
     include("test_hyperbolic.jl")
+    include("test_symmetricpositivedefinite.jl")
 end

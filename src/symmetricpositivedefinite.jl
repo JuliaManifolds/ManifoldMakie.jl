@@ -28,13 +28,15 @@ and ``λ_i``, ``i=1,…,n`` are the eigenvalues of the symmetric positive defini
     scale_mode = :absolute
     Makie.mixin_generic_plot_attributes()...
     Makie.mixin_colormap_attributes()...
+    colorrange = [0, 1]
+    colormap = :viridis
 end
 
 #
 #
 # Helper for the coloring: Geometric anisotropy index, Moakher and Batchelor (2006)
 function geometric_anisotropy_index(p::AbstractMatrix)
-    return geimetric_anisotropy_index(eigvals(p))
+    return geometric_anisotropy_index(eigvals(p))
 end
 function geometric_anisotropy_index(λ::AbstractVector)
     n = length(λ)
@@ -46,8 +48,7 @@ end
 #
 # SPD(2) case
 
-
-function plot!(
+function Makie.plot!(
         I::SymmetricPositiveDefiniteDataImage{
             <:Tuple{
                 Manifolds.SymmetricPositiveDefinite{Manifolds.TypeParameter{Tuple{2}}},
@@ -57,34 +58,39 @@ function plot!(
             },
         }
     )
-    # We use the four converted arguments as input nodes for our computation.
-    # These match the types in the tuple above, i.e. M;, x, y, img
-    input_nodes = [:M, :x, :y, :image]
+    input_nodes = [:M, :x, :y, :image, :scale_ev, :scale_mode]
     # As outputs we want to obtain points and directions for an arrow 3D
     output_nodes = [:gridpts, :scales, :orientations, :colors]
     # This will register a computation in the graph, which connects a new set of
     # output_nodes to the given input_nodes in a way that can dynamically update.
-    map!(I.attributes, input_nodes, output_nodes) do manifold, xr, yr, image
+    map!(I.attributes, input_nodes, output_nodes) do manifold, xr, yr, image, es, em
         pts = Point2f[]
         scales = Vec2f[]
-        orientations = Vec2f[]
+        orientations = Float64[]
         colors = Float32[]
         m, n = size(image)
+        λ_max = 0.0
         for (i, xi) in enumerate(range(xr[1], xr[2]; length = m)), (j, yj) in enumerate(range(yr[1], yr[2]; length = n))
             p = image[i, j]
             λ, V = eigen(p)
+            λ_max = max(λ_max, maximum(λ))
             push!(pts, Point2f(xi, yj))
             push!(scales, Vec2f(λ...))
-            push!(orientations, Vec2f(V[1], V[2]))
+            push!(orientations, atan(V[2, 1], V[1, 1]))
             # use z component / height for coloring
             push!(colors, geometric_anisotropy_index(λ))
         end
-        return (pts, orientations, colors)
+        if em == :relative
+            # scale such that the larges axis is 1, i.e. by 1/λ_max,
+            es = es / λ_max
+        end
+        scales = es .* scales
+        return (pts, scales, orientations, colors)
     end
     return scatter!(
         I, I.attributes, I.gridpts;
-        color = I.colors, marker = marker = :circle, #sadly a bit inconsistent, Makie.Circle(Point2f(0.0,0.0), 1.0) would have been nice
-        markersize = I.scales, rotation = I.orientations,
+        color = I.colors, marker = :circle, #sadly a bit inconsistent, Makie.Circle(Point2f(0.0,0.0), 1.0) would have been nice
+        markersize = I.scales, rotation = I.orientations, markerspace = :data,
     )
 end
 
@@ -108,7 +114,7 @@ function Makie.image(
         size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(), kwargs...
     )
     fig = Figure(backgroundcolor = backgroundcolor, size = size)
-    ax = Axis2(fig[1, 1], aspect = aspect)
+    ax = Axis(fig[1, 1], aspect = aspect)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
@@ -151,17 +157,14 @@ function Makie.plot!(
             λ_max = max(λ_max, maximum(λ))
             push!(pts, Point3f(xi, yj, 0.0))
             push!(scales, Vec3f(λ...))
-            @info "λ: $λ"
             push!(orientations, V * [0.0, 0.0, 1.0])
             # use z component / height for coloring
             push!(colors, geometric_anisotropy_index(λ))
         end
-        @info es
         if em == :relative
             # scale such that the larges axis is 1, i.e. by 1/λ_max,
             es = es / λ_max
         end
-        @info es
         scales = es .* scales
         return (pts, scales, orientations, colors)
     end

@@ -9,23 +9,27 @@ the corresponding Eigenvectors ``v_1,…v_n`` form a basis of ``ℝ^n`` they can
 
 ```@example
 using GLMakie, LinearAlgebra, ManifoldMakie, Manifolds
-R(α) = [cos(α) sin(α); -sin(α) cos(α)]
-n = 20
+R(α) = [cos(α) -sin(α); sin(α) cos(α)]
+n = 32
 M = SymmetricPositiveDefinite(2)
-
-data = [ R(x+y)' * diagm([1.0 + x + y, 1.0/(1.0 + x + y)]) * R(x+y) for x ∈ range(0,1,n), y ∈ range(0,1,n)]
-
-# image(M, data)
-nothing
+data = [ R(π*(x+y))' * diagm([1.0 + x + y, 1.0/(1.0 + x + y)]) * R(π*(x+y)) for x ∈ range(0,1,n), y ∈ range(0,1,n)]
+image(M, data)
 ```
 
 ## Plotting Ellipsoids
+
+When the scale is not so anisotropic, we can also set the color scale ourselves.
+Here the maximum indes is about `0.64` so to color this a bit better we set the range
+
+Since the Eigenvalues here would even reach up to 4.7 we use a relative scaling.
+With the default scaling of `1.0` none of the ellipsoids would ever touch. Here,
+we can scale that a bit up to obtain a slightly denser overall impression.
 
 ```@example
 using GLMakie, LinearAlgebra, ManifoldMakie, Manifolds, ManoptExamples
 M = SymmetricPositiveDefinite(3)
 data = ManoptExamples.artificial_SPD_image(64);
-image(M, data; scale_ev = 2.0, scale_mode = :relative)
+image(M, data; scale_ev = 2.0, scale_mode = :relative, colorrange = [0,0.64])
 ```
 
 ## Function Reference
