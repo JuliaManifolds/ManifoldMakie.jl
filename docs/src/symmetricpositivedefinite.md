@@ -1,6 +1,6 @@
 # Plotting data of symmetric Positive Definnite Matrices
 
-For signals or images of [`SymmetricPositiveDefinite`](@extref `Manifolds.SymmetricPositiveDefinite`)`(n)` can be plotted for tne cases `n=2,3` as [Ellipse](https://en.wikipedia.org/wiki/Ellipse)s and [Ellipsoid](https://en.wikipedia.org/wiki/Ellipsoid)s, respectively.
+For signals or images of [`SymmetricPositiveDefinite`](@extref `Manifolds.SymmetricPositiveDefinite`)`(n)` can be plotted for the cases `n=2,3` as [Ellipse](https://en.wikipedia.org/wiki/Ellipse)s and [Ellipsoid](https://en.wikipedia.org/wiki/Ellipsoid)s, respectively.
 
 Both follow the same idea, that a data point ``p ∈ \mathcal P(n)$`` the [Eigenvalues](https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors) ``λ_1,…,λ_n`` are all positive and the since ``p`` is [diagonalizable](https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors#Diagonalization_and_the_eigendecomposition)
 the corresponding Eigenvectors ``v_1,…v_n`` form a basis of ``ℝ^n`` they can serve as the [principal axes](https://en.wikipedia.org/wiki/Ellipse#Principal_axes) with the eigenvalues as axis lengths.
@@ -19,7 +19,7 @@ image(M, data)
 ## Plotting Ellipsoids
 
 When the scale is not so anisotropic, we can also set the color scale ourselves.
-Here the maximum indes is about `0.64` so to color this a bit better we set the range
+Here the maximum anisotropy index is about `0.64` so to color this a bit better we set the range
 
 Since the Eigenvalues here would even reach up to 4.7 we use a relative scaling.
 With the default scaling of `1.0` none of the ellipsoids would ever touch. Here,

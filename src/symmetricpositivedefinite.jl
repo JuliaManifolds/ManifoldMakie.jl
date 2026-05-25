@@ -24,7 +24,7 @@ and ``λ_i``, ``i=1,…,n`` are the eigenvalues of the symmetric positive defini
 ) begin
     "scale eigenvalues globally"
     scale_ev = 1.0
-    "scale `:absolute` or `:relative`, i.e. after normalizing the larges Eigenvalue to be 1"
+    "scale `:absolute` or `:relative`, i.e. after normalizing the largest Eigenvalue to be 1"
     scale_mode = :absolute
     Makie.mixin_generic_plot_attributes()...
     Makie.mixin_colormap_attributes()...
@@ -81,7 +81,7 @@ function Makie.plot!(
             push!(colors, geometric_anisotropy_index(λ))
         end
         if em == :relative
-            # scale such that the larges axis is 1, i.e. by 1/λ_max,
+            # scale such that the largest axis is 1, i.e. by 1/λ_max,
             es = es / λ_max
         end
         scales = es .* scales
@@ -162,7 +162,7 @@ function Makie.plot!(
             push!(colors, geometric_anisotropy_index(λ))
         end
         if em == :relative
-            # scale such that the larges axis is 1, i.e. by 1/λ_max,
+            # scale such that the largest axis is 1, i.e. by 1/λ_max,
             es = es / λ_max
         end
         scales = es .* scales
