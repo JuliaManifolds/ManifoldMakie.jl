@@ -177,7 +177,6 @@ Plots an image on a rectangle bounded by `x` and `y` (defaults to size of image)
 ) begin
     Makie.mixin_generic_plot_attributes()...
     Makie.mixin_colormap_attributes()...
-    fxaa = false
     colormap = :viridis
 end
 

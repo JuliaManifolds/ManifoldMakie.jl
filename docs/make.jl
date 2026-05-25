@@ -94,6 +94,7 @@ makedocs(;
         "Circle" => "circle.md",
         "Hyperbolic (2D,3D)" => "hyperbolic.md",
         "Sphere (1D, 2D)" => "sphere.md",
+        "Symmetric Positive Definite (2,3)" => "symmetricpositivedefinite.md",
         "Misc." => [
             "Changelog" => "changelog.md",
             "References" => "references.md",
