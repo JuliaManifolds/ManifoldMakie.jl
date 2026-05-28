@@ -27,4 +27,6 @@ export poincareballplot, poincareballplot!
 export poincarehalfspaceplot, poincarehalfspaceplot!
 export scattergeodesics, scattergeodesics!
 export sphereplot, sphereplot!
+
+
 end # module ManifoldMakie

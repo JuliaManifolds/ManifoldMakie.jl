@@ -1,22 +1,37 @@
 """
-    circleplot(::Manifolds.Circle{ℝ}; kwargs...)
-    circleplot(::Manifolds.Circle{ℂ}; kwargs...)
+    fig, ax = circleplot(::Manifolds.Circle{ℝ}; kwargs...)
+    fig, ax = circleplot(::Manifolds.Circle{ℂ}; kwargs...)
 
 Draw a plot for data on the [`Circle`](@extref `Manifolds.Circle`).
 For the real-valued case this is a plot on an interval [-π,π), for the complex case a circle in the complex plane.
 
+This is called when you use
 
-This can be combined with
 * [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
 * [`arrows2d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors (for the complex case)
 * [`lines`](@extref Makie.lines)`(M, pst)` and [`scatterlines`](@extref Makie.scatterlines)`(M, pst)` to signals (only on the real circle),
   where jumps larger than ``π`` are not drawn
+
+or can be drawn into with their mutating variant
+
+## Keyword Arguments
+
+* `size = (1024, 1024)` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `backgroundcolor = :white` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `axis = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Axis`](@extref `Makie.Axis`)
+
+all other keywords are also passed to the internal [`Figure`](@extref `Makie.Figure`).
 
 ## Examples
 
 ```julia
 fig, ax, p = circleplot(Manifolds.Circle(ℂ))
 ```
+
+## Alias
+
+`Figure(M; kwargs...)` is an alias for this
+
 """
 @recipe CirclePlot (M,) begin
     "Circle alpha (0 = transparent, 1 = opaque) in the complex case (`Circle(ℂ)`)"
@@ -30,6 +45,8 @@ fig, ax, p = circleplot(Manifolds.Circle(ℂ))
 end
 
 # Real case
+# if we get an axis there is nothing to do, but since we can not just return “nothig”
+# we add a dummy plot for now.
 function Makie.plot!(p::CirclePlot{<:Tuple{Manifolds.Circle{ℝ}}})
     #Fake elements?
     scatter!(p, Point3f(NaN))
@@ -37,18 +54,19 @@ function Makie.plot!(p::CirclePlot{<:Tuple{Manifolds.Circle{ℝ}}})
 end
 function circleplot(
         M::Manifolds.Circle{ℝ};
-        size = (1024, 1024), backgroundcolor = :white, kwargs...
+        size = (1024, 1024), backgroundcolor = :white,
+        axis = Dict{Symbol, Any}(),
+        kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, kwargs...)
     ax = Axis(
         fig[1, 1];
         yticks = ([-π, -π / 2, 0.0, π / 2, π], ["-π", L"-\frac{π}{2}", "0", L"\frac{π}{2}", L"π"]), limits = (nothing, (-π, π)),
-        kwargs...
+        axis...
     )
     ax.topspinecolor = :lightgray
     hidespines!(ax, :r)
-    pl = circleplot!(ax, M; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
+    return Makie.FigureAxis(fig, ax)
 end
 
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
@@ -89,17 +107,17 @@ end
 
 function circleplot(
         M::Manifolds.Circle{ℂ};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(), kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(),
+        axis = Dict{Symbol, Any}(),
+        kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = Axis(fig[1, 1])
-    ax.aspect = aspect
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, kwargs...)
+    ax = Axis(fig[1, 1]; aspect = aspect, axis...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
-    pl = circleplot!(ax, M; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
+    return Makie.FigureAxis(fig, ax)
 end
 
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
@@ -131,6 +149,27 @@ function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Circle{ℂ}, pts
         convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
 end
+#
+#
+# A nice accessors help – pass down lines, scatter and for the complex circle also arrows 2D
+Makie.Figure(M::Manifolds.Circle; kwargs...) = circleplot(M; kwargs...)
+function Makie.lines(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = lines!(ax, M, args...; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+function Makie.scatter(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fig, ax = CircleFigure(M; figure...)
+    pl = lines!(ax, M, args; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+function Makie.arrows2d(M::Manifolds.Circle{ℂ}, args; figure = Dict{Symbol, Any}(), kwargs...)
+    fig, ax = CircleFigure(M; figure...)
+    pl = scatter!(ax, M, args; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
 
 """
     circleimage(::Manifolds.Circle{ℝ}; kwargs...)
@@ -139,7 +178,9 @@ Start a plot for 2D data with values on the [`Circle`](@extref `Manifolds.Circle
 represented in angles an interval [-π,π).
 
 This can be combined with
-* [`image`](@extref `Makie.image`)`(M, img)` to show the image of the data.
+* [`image!`](@extref `Makie.image`)`(ax, M, img)` to show the image of the data.
+
+and is called if you call `image(M, img)` directly.
 
 ## Examples
 
@@ -159,11 +200,12 @@ function Makie.plot!(p::CircleImage{<:Tuple{Manifolds.Circle{ℝ}}})
 end
 function circleimage(
         M::Manifolds.Circle{ℝ};
-        size = (1024, 1024), backgroundcolor = :white, aspect = Makie.DataAspect(), kwargs...
+        size = (1024, 1024), backgroundcolor = :white, aspect = Makie.DataAspect(),
+        axis = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, kwargs...)
     ax = Axis(
-        fig[1, 1]; aspect = aspect, kwargs...
+        fig[1, 1]; aspect = aspect, axis...
     )
     # This overwrites the default for a specific recipe with a higher priority:
     ax.scene.theme[:Image] = Attributes(colormap = :hsv)
@@ -173,13 +215,23 @@ function circleimage(
         colormap = :hsv,
         ticks = ([-π, -π / 2, 0.0, π / 2, π], ["-π", L"-\frac{π}{2}", "0", L"\frac{π}{2}", L"π"]),
     )
-    pl = circleimage!(ax, M; kwargs...)
+    return Makie.FigureAxis(fig, ax)
+end
+function Makie.image(
+        M::Manifolds.Circle{ℝ}, args...;
+        size = (1024, 1024), backgroundcolor = :white, aspect = Makie.DataAspect(),
+        axis = Dict{Symbol, Any}(), figure = Dict{Symbol, Any}(), kwargs...
+    )
+    fig_ax = circleimage(M; size = size, backgroundcolor = backgroundcolor, aspect = aspect, axis = axis, figure...)
+    fig = fig_ax.figure
+    ax = fig_ax.axis
+    pl = image!(ax, M, args...; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
-
 # For just image data without x and y
+# converts image!(ax, M, ...) into classical image! plots
 function Makie.convert_arguments(
-        P::Makie.ImageLike, M::Manifolds.Circle{ℝ}, img::I
+        P::Makie.ImageLike, ::Manifolds.Circle{ℝ}, img::I
     ) where {I <: AbstractMatrix{<:Real}}
     #Not 100 % sure why the [1] is necessary, taken from conversions happening in arrows.jl
     return Makie.convert_arguments(P, Manifolds.sym_rem.(img))

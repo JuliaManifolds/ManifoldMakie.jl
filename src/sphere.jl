@@ -228,10 +228,11 @@ function Makie.convert_arguments(
 end
 function Makie.image(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args...;
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, elevation = π / 2, azimuth = π / 2, kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, elevation = π / 2, azimuth = π / 2,
+        axis = Dict{Symbol, Any}(), figure = Dict{Symbol, Any}(), kwargs...
     )
     fig = Figure(backgroundcolor = backgroundcolor, size = size)
-    ax = Axis3(fig[1, 1], aspect = aspect, elevation = elevation, azimuth = azimuth)
+    ax = Axis3(fig[1, 1], aspect = aspect, elevation = elevation, azimuth = azimuth, axis...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
