@@ -5,11 +5,20 @@ All notable Changes to the Julia package `ManifoldMakie.jl` are documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] June 1st, 2026
+
+### Added
+
+* `scatter`, `lines`, `arrows2d`, `arrows3d` and `geodesics` now set up the right plot
+  according to the manifold and data passed, i.e.
+  - the circle in the complex plane is drawn before any of these functions “take over” in
+    their mutating variant.
+
 ## [0.1.0] May 25, 2026
 
 Initial release.
 
-## Added
+### Added
 
 * a `circleimage(Manifold.Circle(ℝ))` to plot angle-valued image data
 * a `circleplot(Manifolds.Circle(𝔽))` for the real and complex circle representation

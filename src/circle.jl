@@ -45,7 +45,7 @@ fig, ax, p = circleplot(Manifolds.Circle(ℂ))
 end
 
 # Real case
-# if we get an axis there is nothing to do, but since we can not just return “nothig”
+# if we get an axis there is nothing to do, but since we can not just return “nothing”
 # we add a dummy plot for now.
 function Makie.plot!(p::CirclePlot{<:Tuple{Manifolds.Circle{ℝ}}})
     #Fake elements?
@@ -161,12 +161,12 @@ function Makie.lines(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(),
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
 function Makie.scatter(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fig, ax = CircleFigure(M; figure...)
+    fig, ax = Figure(M; figure...)
     pl = lines!(ax, M, args; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
 function Makie.arrows2d(M::Manifolds.Circle{ℂ}, args; figure = Dict{Symbol, Any}(), kwargs...)
-    fig, ax = CircleFigure(M; figure...)
+    fig, ax = Figure(M; figure...)
     pl = scatter!(ax, M, args; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
