@@ -28,12 +28,19 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
         fig, ax, pl = lines(M, y; color = :green)
         scatter!(ax, M, x, y2; color = :green)
         @test_reference "img/circle/real-scatter.png" fig
+
+        circleplot!(ax, M) # check that this does not fail and here – does nothing
+        @test_reference "img/circle/real-scatter.png" fig
     end
     @testset "Circle Image" begin
         img = sym_rem.(ManoptExamples.artificialIn_SAR_image(256))
         M = Manifolds.Circle(ℝ)
         fig, ax, pl = image(M, img)
         @test_reference "img/circle/image.png" fig
+
+        circleimage!(ax, M) # check that this does not fail and here – does nothing
+        @test_reference "img/circle/image.png" fig
+
 
         # also works with ranges x and y
         figax = circleimage(M)
