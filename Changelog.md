@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   according to the manifold and data passed, i.e.
   - the circle in the complex plane is drawn before any of these functions “take over” in
     their mutating variant.
+* `geodesics` and `scattergeodesics` now also always generate the correct plot first.
 
 ## [0.1.0] May 25, 2026
 

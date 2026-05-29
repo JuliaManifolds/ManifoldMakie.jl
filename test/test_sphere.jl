@@ -3,61 +3,59 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
 @testset "Plots for data on the sphere" begin
     @testset "Plots on the 1-sphere" begin
         M = Manifolds.Sphere(1)
-        # Since S2 is the default case and its color is white, set S1 surface/boundary color
-        fig, ax, pl = sphereplot(M; surfacecolor = :gray)
-
         p = [1.0, 0.0]
         q = [1 / sqrt(2), -1 / sqrt(2)]
         r = [1 / sqrt(2), 1 / sqrt(2)]
         pts = shortest_geodesic(M, p, q, 0:0.05:1.0)
         vecs = [log(M, s, r) for s in pts]
 
-        arrows2d!(ax, M, pts, vecs; color = :blue)
+        fig, ax, pl = arrows2d(M, pts, vecs; color = :blue)
         scatter!(ax, M, pts; color = :green, markersize = 16)
         scatter!(ax, M, [r]; color = :orange, markersize = 16)
         @test_reference "img/sphere/S1-scatter.png" fig
     end
     @testset "Plots on the 2-Sphere" begin
         M = Manifolds.Sphere(2)
-        fig, ax, pl = sphereplot(M)
-        @test_reference "img/sphere/sphere.png" fig
+        s_fig = Figure(M).figure
+        @test_reference "img/sphere/sphere.png" s_fig
 
         p = [0.0, 0.0, 1.0]
         q = [0.0, 1 / sqrt(2), -1 / sqrt(2)]
         r = [1 / sqrt(2), 0.0, 1 / sqrt(2)]
         P = shortest_geodesic(M, p, q, 0:0.05:1.0)
         pts = Point3f.(P)
-        scatter!(ax, M, pts; color = :green, markersize = 16)
+        fig, ax, pl = scatter(M, pts; color = :green, markersize = 16)
         @test_reference "img/sphere/scatter.png" fig
         # our plots can convert themselves, so this should do the same
         scatter!(ax, M, P; color = :green, markersize = 16)
         @test_reference "img/sphere/scatter.png" fig
 
-        fig, ax, pl = sphereplot(M)
         X = [log(M, s, r) for s in P]
         vecs = Vec3f.(X)
-        arrows3d!(
-            ax, M, pts, vecs; color = :blue,
+        fig2, ax2, pl2 = arrows3d(
+            M, pts, vecs; color = :blue,
             minshaftlength = 0, shaftlength = 0.99, shaftradius = 0.004, tipradius = 0.016, tiplength = 0.1,
         )
-        @test_reference "img/sphere/arrows3.png" fig
+        @test_reference "img/sphere/arrows3.png" fig2
 
         # Also check that the plots themselves convert, so this should di the same as the one before
-        fig, ax, pl = sphereplot(M)
-        arrows3d!(
-            ax, M, P, X; color = :blue,
+        fig3, ax3, pl3 = arrows3d(
+            M, P, X; color = :blue,
             minshaftlength = 0, shaftlength = 0.99, shaftradius = 0.004, tipradius = 0.016, tiplength = 0.1,
         )
 
-        @test_reference "img/sphere/arrows3.png" fig
+        @test_reference "img/sphere/arrows3.png" fig3
 
         # Geodesics
-        fig, ax, pl = sphereplot(M)
         p1, p2, p3 = [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]
         p1b, p2b, = [1 / sqrt(2), 0, 1 / sqrt(2)], [0, 1 / sqrt(2), 1 / sqrt(2)]
-        geodesics!(ax, M, [p1, p2, p3]; closed = true, color = :green, linewidth = 3)
-        scattergeodesics!(ax, M, [p1b, p2b, p3]; closed = true, color = :blue, linewidth = 2, markersize = 12)
-        @test_reference "img/sphere/geodesics.png" fig
+        fig4, ax4, pl4 = geodesics(M, [p1, p2, p3]; closed = true, color = :green, linewidth = 3)
+        scattergeodesics!(ax4, M, [p1b, p2b, p3]; closed = true, color = :blue, linewidth = 2, markersize = 12)
+        @test_reference "img/sphere/geodesics.png" fig4
+
+        fig5, ax5, pl5 = scattergeodesics(M, [p1b, p2b, p3]; closed = true, color = :blue, linewidth = 2, markersize = 12)
+        @test_reference "img/sphere/geodesics2.png" fig5
+
     end
     @testset "2D data of unit norm vectors" begin
         M = Manifolds.Sphere(2)
