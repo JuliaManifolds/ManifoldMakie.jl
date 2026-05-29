@@ -39,7 +39,7 @@ for the cyclic data on ``𝕊^1`` embedded in ``ℝ^2``
     # add the other default plot attributes here as well
     Makie.mixin_generic_plot_attributes()...
 end
-
+Makie.Figure(M::Sphere; kwargs...) = sphereplot(M; kwargs...)
 #
 #
 # 𝕊^1
@@ -53,17 +53,18 @@ end
 
 function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(), kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(),
+        figure = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = Axis(fig[1, 1])
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
+    ax = Axis(fig[1, 1]; kwargs...)
     ax.aspect = aspect
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
-    pl = sphereplot!(ax, M; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
+    sphereplot!(ax, M; plot...)
+    return Makie.FigureAxis(fig, ax)
 end
 
 function Makie.plot!(p::SpherePlot{<:Tuple{Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}}})
@@ -90,17 +91,18 @@ end
 # Overwrite sphereplot (as a bit of a hack) to remove axes and use the nice default sphere from the docs?
 function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data,
+        figure = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = Axis3(fig[1, 1], aspect = aspect)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
+    ax = Axis3(fig[1, 1], aspect = aspect, kwargs...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
     ax.azimuth = π / 4
-    pl = sphereplot!(ax, M; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
+    pl = sphereplot!(ax, M; plot...)
+    return Makie.FigureAxis(fig, ax)
 end
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
 # (and any other PointBased plot) work on a manifold via this overload.
@@ -151,6 +153,36 @@ function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Mani
     return (
         convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
+end
+
+# Allocating variants
+function Makie.lines(M::Manifolds.Sphere, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = lines!(ax, M, args...; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+function Makie.scatter(M::Manifolds.Sphere, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = scatter!(ax, M, args...; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+function Makie.arrows2d(M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = arrows2d!(ax, M, args...; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+function Makie.arrows3d(M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = arrows3d!(ax, M, args...; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
 end
 
 #

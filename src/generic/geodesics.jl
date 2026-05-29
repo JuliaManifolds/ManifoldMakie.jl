@@ -47,6 +47,14 @@ function Makie.plot!(p::Geodesics{<:Tuple{AM, V}}) where {AM <: Manifolds.Abstra
     return p
 end
 
+function geodesics(M::Manifolds.AbstractManifold, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = geodesics!(ax, M, args...; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
+end
+
 """
     scattergeodesics(M, points)
 
@@ -110,4 +118,12 @@ function Makie.plot!(p::ScatterGeodesics{<:Tuple{AM, V}}) where {AM <: Manifolds
         colorrange = p.real_markercolorrange,
     )
     return p
+end
+
+function scattergeodesics(M::Manifolds.AbstractManifold, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = scattergeodesics!(ax, M, args...; kwargs...)
+    return Makie.FigureAxisPlot(fig, ax, pl)
 end
