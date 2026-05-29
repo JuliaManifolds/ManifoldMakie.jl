@@ -19,13 +19,16 @@ or can be drawn into with their mutating variant
 * `size = (1024, 1024)` passed to the generated [`Figure`](@extref `Makie.Figure`)
 * `backgroundcolor = :white` passed to the generated [`Figure`](@extref `Makie.Figure`)
 * `axis = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Axis`](@extref `Makie.Axis`)
+* `figure = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Figure`](@extref `Makie.Figure`)
 
-all other keywords are also passed to the internal [`Figure`](@extref `Makie.Figure`).
+all other keyword arguments are passed to the internal `plot!` call, so they can also be used
+to modify the listed properties below – for the real-valued case, these are ignores, since there
+is no internal plot.
 
 ## Examples
 
 ```julia
-fig, ax, p = circleplot(Manifolds.Circle(ℂ))
+fig, ax = circleplot(Manifolds.Circle(ℂ))
 ```
 
 ## Alias
@@ -56,9 +59,10 @@ function circleplot(
         M::Manifolds.Circle{ℝ};
         size = (1024, 1024), backgroundcolor = :white,
         axis = Dict{Symbol, Any}(),
+        figure = Dict{Symbol, Any}(),
         kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size, kwargs...)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure..., kwargs...)
     ax = Axis(
         fig[1, 1];
         yticks = ([-π, -π / 2, 0.0, π / 2, π], ["-π", L"-\frac{π}{2}", "0", L"\frac{π}{2}", L"π"]), limits = (nothing, (-π, π)),
@@ -108,16 +112,16 @@ end
 function circleplot(
         M::Manifolds.Circle{ℂ};
         size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(),
-        axis = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(),
+        axis = Dict{Symbol, Any}(), figure = Dict{Symbol, Any}(),
         kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size, kwargs...)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
     ax = Axis(fig[1, 1]; aspect = aspect, axis...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
-    circleplot!(ax, M; plot...)
+    circleplot!(ax, M; kwargs...)
     return Makie.FigureAxis(fig, ax)
 end
 
@@ -153,28 +157,7 @@ end
 #
 #
 # A nice accessors help – pass down lines, scatter and for the complex circle also arrows 2D
-Makie.Figure(M::Manifolds.Circle; kwargs...) = circleplot(M; kwargs...)
-function Makie.lines(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M; figure...)
-    fig = fa.figure
-    ax = fa.axis
-    pl = lines!(ax, M, args...; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
-end
-function Makie.scatter(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M; figure...)
-    fig = fa.figure
-    ax = fa.axis
-    pl = scatter!(ax, M, args...; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
-end
-function Makie.arrows2d(M::Manifolds.Circle{ℂ}, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M; figure...)
-    fig = fa.figure
-    ax = fa.axis
-    pl = arrows2d!(ax, M, args...; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
-end
+Makie.Figure(M::Manifolds.Circle, T::Type = Any; kwargs...) = circleplot(M; kwargs...)
 
 """
     circleimage(::Manifolds.Circle{ℝ}; kwargs...)
@@ -190,7 +173,7 @@ and is called if you call `image(M, img)` directly.
 ## Examples
 
 ```julia
-fig, ax, p = circleimage(Manifolds.Circle(ℂ))
+fig, ax = circleimage(Manifolds.Circle(ℂ))
 ```
 """
 @recipe CircleImage (M,) begin

@@ -3,25 +3,40 @@
 
 Draw the [`Sphere`](@extref `Manifolds.Sphere`)`(n)`, ``n=1,2`` as a (transparent) surface with an overlaid wireframe.
 
-This can be combined with
+This is called when you use
+
 * [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
 * [`arrows3d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors
 * [`geodesics`](@ref)`(M, pst)` and [`scattergeodesics`](@ref)`(M, pst)` to draw geodesics
 
+## Keyword Arguments
+
+* `size = (1024, 1024)` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `backgroundcolor = :white` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `axis = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Axis`](@extref `Makie.Axis`)
+* `figure = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Figure`](@extref `Makie.Figure`)
+
+all other keyword arguments are passed to the internal `plot!` call, so they can also be used
+to modify the listed properties below.
+
 ## Examples
 
 ```julia
-fig, ax, p = sphereplot(Manifolds.Sphere(2))
+fig, ax = sphereplot(Manifolds.Sphere(2))
 ```
 
 for the 2-sphere ``𝕊^2`` embedded in ``ℝ^3``
 
-
- ```julia
-fig, ax, p = sphereplot(Manifolds.Sphere(1))
+```julia
+fig, ax = sphereplot(Manifolds.Sphere(1))
 ```
 
 for the cyclic data on ``𝕊^1`` embedded in ``ℝ^2``
+
+## Alias
+
+`Figure(M; kwargs...)` is an alias for this
+
 """
 @recipe SpherePlot (M,) begin
     "Color of the wireframe lines drawn on top of the surface (``𝕊^2``)."
@@ -39,7 +54,7 @@ for the cyclic data on ``𝕊^1`` embedded in ``ℝ^2``
     # add the other default plot attributes here as well
     Makie.mixin_generic_plot_attributes()...
 end
-Makie.Figure(M::Sphere; kwargs...) = sphereplot(M; kwargs...)
+Makie.Figure(M::Sphere, T::Type = Any; kwargs...) = sphereplot(M; kwargs...)
 #
 #
 # 𝕊^1
@@ -54,16 +69,16 @@ end
 function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}};
         size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(),
-        figure = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(), kwargs...
+        figure = Dict{Symbol, Any}(), axis = Dict{Symbol, Any}(), kwargs...
     )
     fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
-    ax = Axis(fig[1, 1]; kwargs...)
+    ax = Axis(fig[1, 1]; axis...)
     ax.aspect = aspect
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
-    sphereplot!(ax, M; plot...)
+    sphereplot!(ax, M; kwargs...)
     return Makie.FigureAxis(fig, ax)
 end
 
@@ -92,16 +107,16 @@ end
 function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}};
         size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data,
-        figure = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(), kwargs...
+        figure = Dict{Symbol, Any}(), axis = Dict{Symbol, Any}(), kwargs...
     )
     fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
-    ax = Axis3(fig[1, 1], aspect = aspect, kwargs...)
+    ax = Axis3(fig[1, 1], aspect = aspect, axis...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
     ax.azimuth = π / 4
-    pl = sphereplot!(ax, M; plot...)
+    sphereplot!(ax, M; kwargs...)
     return Makie.FigureAxis(fig, ax)
 end
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
@@ -153,36 +168,6 @@ function Makie.convert_arguments(::Makie.ArrowLike, ::Manifolds.Sphere{ℝ, Mani
     return (
         convert_arguments(Makie.PointBased(), pts)[1], convert_arguments(Makie.PointBased(), vecs)[1],
     )
-end
-
-# Allocating variants
-function Makie.lines(M::Manifolds.Sphere, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M; figure...)
-    fig = fa.figure
-    ax = fa.axis
-    pl = lines!(ax, M, args...; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
-end
-function Makie.scatter(M::Manifolds.Sphere, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M; figure...)
-    fig = fa.figure
-    ax = fa.axis
-    pl = scatter!(ax, M, args...; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
-end
-function Makie.arrows2d(M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}}, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M; figure...)
-    fig = fa.figure
-    ax = fa.axis
-    pl = arrows2d!(ax, M, args...; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
-end
-function Makie.arrows3d(M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M; figure...)
-    fig = fa.figure
-    ax = fa.axis
-    pl = arrows3d!(ax, M, args...; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
 end
 
 #

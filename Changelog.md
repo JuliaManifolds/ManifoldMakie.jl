@@ -13,7 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   according to the manifold and data passed, i.e.
   - the circle in the complex plane is drawn before any of these functions “take over” in
     their mutating variant.
+  - the 1- and 2-sphere
+  - all three representations of hyperbolic space
 * `geodesics` and `scattergeodesics` now also always generate the correct plot first.
+
+These functions have a uniform interface: they pass `axis=` and `figure=` down to the
+Figure to be created and `plot=` as that functions kwargs. Their own `kwargs they pass to their mutating variant.
+
+### Changed
+
+* internally the elements returned were not as unified as originally intended. This bug is now fixed:
+  - all `Figure(M)` calls now return a `FigureAxis`. The all accept `axis=` and `figure=` and pass their keyword arguments to the internal plot
+  - all non-mutating functions now return a `FigureAxisPlot`
+  - the mutating ones are actually recipes and hence return the plot they modified
 
 ## [0.1.0] May 25, 2026
 

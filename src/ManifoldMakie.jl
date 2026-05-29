@@ -9,6 +9,7 @@ using StaticArrays
 
 # Generic Recipes
 include("generic/geodesics.jl")
+include("generic/nonmutating.jl")
 
 include("circle.jl")
 include("hyperbolic/hyperboloid.jl")
