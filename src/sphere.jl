@@ -3,25 +3,40 @@
 
 Draw the [`Sphere`](@extref `Manifolds.Sphere`)`(n)`, ``n=1,2`` as a (transparent) surface with an overlaid wireframe.
 
-This can be combined with
+This is called when you use
+
 * [`scatter`](@extref `Makie.scatter`)`(M, pts)` to plot points thereon
 * [`arrows3d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors
 * [`geodesics`](@ref)`(M, pst)` and [`scattergeodesics`](@ref)`(M, pst)` to draw geodesics
 
+## Keyword Arguments
+
+* `size = (1024, 1024)` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `backgroundcolor = :white` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `axis = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Axis`](@extref `Makie.Axis`)
+* `figure = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Figure`](@extref `Makie.Figure`)
+
+all other keyword arguments are passed to the internal `plot!` call, so they can also be used
+to modify the listed properties below.
+
 ## Examples
 
 ```julia
-fig, ax, p = sphereplot(Manifolds.Sphere(2))
+fig, ax = sphereplot(Manifolds.Sphere(2))
 ```
 
 for the 2-sphere ``𝕊^2`` embedded in ``ℝ^3``
 
-
- ```julia
-fig, ax, p = sphereplot(Manifolds.Sphere(1))
+```julia
+fig, ax = sphereplot(Manifolds.Sphere(1))
 ```
 
 for the cyclic data on ``𝕊^1`` embedded in ``ℝ^2``
+
+## Alias
+
+`Figure(M; kwargs...)` is an alias for this
+
 """
 @recipe SpherePlot (M,) begin
     "Color of the wireframe lines drawn on top of the surface (``𝕊^2``)."
@@ -39,7 +54,7 @@ for the cyclic data on ``𝕊^1`` embedded in ``ℝ^2``
     # add the other default plot attributes here as well
     Makie.mixin_generic_plot_attributes()...
 end
-
+Makie.Figure(M::Sphere, T::Type = Any; kwargs...) = sphereplot(M; kwargs...)
 #
 #
 # 𝕊^1
@@ -53,17 +68,18 @@ end
 
 function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{1}}};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(), kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(),
+        figure = Dict{Symbol, Any}(), axis = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = Axis(fig[1, 1])
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
+    ax = Axis(fig[1, 1]; axis...)
     ax.aspect = aspect
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
-    pl = sphereplot!(ax, M; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
+    sphereplot!(ax, M; kwargs...)
+    return Makie.FigureAxis(fig, ax)
 end
 
 function Makie.plot!(p::SpherePlot{<:Tuple{Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}}})
@@ -90,17 +106,18 @@ end
 # Overwrite sphereplot (as a bit of a hack) to remove axes and use the nice default sphere from the docs?
 function sphereplot(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data,
+        figure = Dict{Symbol, Any}(), axis = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = Axis3(fig[1, 1], aspect = aspect)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
+    ax = Axis3(fig[1, 1], aspect = aspect, axis...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)
     end
     ax.azimuth = π / 4
-    pl = sphereplot!(ax, M; kwargs...)
-    return Makie.FigureAxisPlot(fig, ax, pl)
+    sphereplot!(ax, M; kwargs...)
+    return Makie.FigureAxis(fig, ax)
 end
 # For `scatter(M, pts)`, `lines(M, pts)`, `scatterlines(M, pts)`
 # (and any other PointBased plot) work on a manifold via this overload.
@@ -228,10 +245,11 @@ function Makie.convert_arguments(
 end
 function Makie.image(
         M::Manifolds.Sphere{ℝ, Manifolds.TypeParameter{Tuple{2}}}, args...;
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, elevation = π / 2, azimuth = π / 2, kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, elevation = π / 2, azimuth = π / 2,
+        axis = Dict{Symbol, Any}(), figure = Dict{Symbol, Any}(), kwargs...
     )
     fig = Figure(backgroundcolor = backgroundcolor, size = size)
-    ax = Axis3(fig[1, 1], aspect = aspect, elevation = elevation, azimuth = azimuth)
+    ax = Axis3(fig[1, 1], aspect = aspect, elevation = elevation, azimuth = azimuth, axis...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)

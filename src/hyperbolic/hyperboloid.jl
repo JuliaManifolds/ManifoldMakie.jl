@@ -7,11 +7,28 @@ This can be combined with
 * [`arrows3d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors
 * [`geodesics`](@ref)`(M, pst)` and [`scattergeodesics`](@ref)`(M, pst)` to draw geodesics
 
+## Keyword Arguments
+
+* `size = (1024, 1024)` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `backgroundcolor = :white` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `axis = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Axis`](@extref `Makie.Axis`)
+* `figure = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Figure`](@extref `Makie.Figure`)
+
+all other keyword arguments are passed to the internal `plot!` call, so they can also be used
+to modify the listed properties below.
+
 ## Example
 
 ```julia
-fig, ax, p = hyperboloidplot(Hyperbolic(2))
+fig, ax = hyperboloidplot(Hyperbolic(2))
 ```
+
+## Aliases
+
+`Figure(M; kwargs...)`
+`Figure(M, Array{Float64}; kwargs...)`
+`Figure(M, HyperboloidPoint; kwargs...)`
+
 """
 @recipe HyperboloidPlot (M,) begin
     "Color of the wireframe lines drawn on top of the surface."
@@ -33,6 +50,8 @@ fig, ax, p = hyperboloidplot(Hyperbolic(2))
     # add the other default plot attributes here as well
     Makie.mixin_generic_plot_attributes()...
 end
+Makie.Figure(M::Hyperbolic, T::Type = Any; kwargs...) = hyperboloidplot(M; kwargs...)
+
 
 function Makie.plot!(p::HyperboloidPlot{<:Tuple{Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}}})
     # create a new compute edge – since we have to be careful with
@@ -77,10 +96,11 @@ end
 # Overwrite hyperboloidplot (as a bit of a hack) to remove axes and use the nice default sphere from the docs?
 function hyperboloidplot(
         M::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{2}}};
-        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data, kwargs...
+        size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = :data,
+        figure = Dict{Symbol, Any}(), axis = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(backgroundcolor = backgroundcolor, size = size)
-    ax = Axis3(fig[1, 1], aspect = aspect)
+    fig = Figure(backgroundcolor = backgroundcolor, size = size, figure...)
+    ax = Axis3(fig[1, 1], aspect = aspect, axis...)
     if !show_axis
         hidedecorations!(ax)
         hidespines!(ax)

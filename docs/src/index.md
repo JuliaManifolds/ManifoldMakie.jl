@@ -8,7 +8,7 @@ to plot manifold-valued data for certain manifolds from [Manifolds.jl](https://j
 When working with data on manifolds and the manifold admits a nice visualisation, that
 can be beneficial to interpret results.
 
-Sometime such a visialusation leads to boiler plate code, e.g. so set up the environment
+Sometime such a visualisation leads to boiler plate code, e.g. so set up the environment
 or to convert points, tangent vectors, geodesics, or other elements to plot.
 
 ## Design choices
@@ -24,7 +24,7 @@ For example given some [`Axis`](@extref `Makie.Axis`) `ax` to plot into, a , a m
 and some points thereon. Calling
 
 ```
-scatter(ax, M, pts)
+scatter!(ax, M, pts)
 ```
 
 accepts the points `pts` as
@@ -34,3 +34,12 @@ for example (unit) vectors of length 3 for the [`Sphere`](@extref `Manifolds.Sph
 for example whether to use [`HyperboloidPoint`](@extref `Manifolds.HyperboloidPoint`)s or [`PoincareBallPoint`](@extref `Manifolds.PoincareBallPoint`)
 to specify the visualization chosen, where the last point would be the same as the hyperbolic case.
 * a vector of `Point2` or `Point3` types when you already did the conversion yourself. Since then different representations can not be distinguished, this is only useful for the default representations the same way as the first case is. This last conversion should happen within this package basically only when “passing” over to actual methods implemented in [Makie.jl](https://makie.org/) itself.
+
+Alternatively also
+
+```
+scatter(M, pts)
+```
+
+works, which for these plots internally uses `Figure(M, eltype(pts))` to determine (and setup)
+the figure and axis to use.

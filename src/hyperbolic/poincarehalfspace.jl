@@ -9,15 +9,32 @@ This can be combined with
 * [`arrows3d`](@extref `Makie.arrows3d`)`(M, pts, vecs)` to plot tangent vectors
 * [`geodesics`](@ref)`(M, pst)` and [`scattergeodesics`](@ref)`(M, pst)` to draw geodesics
 
+## Keyword Arguments
+
+* `size = (1024, 1024)` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `backgroundcolor = :white` passed to the generated [`Figure`](@extref `Makie.Figure`)
+* `axis = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Axis`](@extref `Makie.Axis`)
+* `figure = Dict{Symbol, Any}()` specify keywords to pass to the internal [`Figure`](@extref `Makie.Figure`)
+
+all other keyword arguments are passed to the internal `plot!` call, so they can also be used
+to modify the listed properties below.
+
 ## Example
 
 ```julia
-fig, ax, p = poincarehalfspaceplot(Hyperbolic(2))
+fig, ax = poincarehalfspaceplot(Hyperbolic(2))
 ```
+
+## Alias
+
+`Figure(M, PoincareBallPoint; kwargs...)`
+
 """
 @recipe PoincareHalfSpacePlot (M,) begin
     Makie.mixin_generic_plot_attributes()...
 end
+Makie.Figure(M::Hyperbolic, ::Type{<:PoincareHalfSpacePoint}; kwargs...) = poincarehalfspaceplot(M; kwargs...)
+
 function Makie.plot!(p::PoincareHalfSpacePlot{<:Tuple{Hyperbolic{Manifolds.TypeParameter{Tuple{2}}}}})
     #Fake elements?
     scatter!(p, Point3f(NaN))
@@ -35,10 +52,10 @@ function poincarehalfspaceplot(
         M::Hyperbolic{Manifolds.TypeParameter{Tuple{2}}};
         size = (1024, 1024), backgroundcolor = :white,
         limits = (nothing, nothing, 0.0, nothing), #to not change x and only lower y
-        kwargs...
+        figure = Dict{Symbol, Any}(), axis = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = Axis(fig[1, 1]; limits = limits)
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
+    ax = Axis(fig[1, 1]; limits = limits, axis...)
     #we only have positive y values, so we set the spines accordingly to not show [:b]ottom
     hidespines!(ax, :b)
     pl = poincarehalfspaceplot!(ax, M; kwargs...)
@@ -49,10 +66,11 @@ end
 # Overwrite hyperboloidplot (as a bit of a hack) to remove axes and use the nice default sphere from the docs?
 function poincarehalfspaceplot(
         M::Manifolds.Hyperbolic{Manifolds.TypeParameter{Tuple{3}}};
-        size = (1024, 1024), backgroundcolor = :white, kwargs...
+        size = (1024, 1024), backgroundcolor = :white,
+        figure = Dict{Symbol, Any}(), axis = Dict{Symbol, Any}(), kwargs...
     )
-    fig = Figure(; backgroundcolor = backgroundcolor, size = size)
-    ax = Axis3(fig[1, 1])
+    fig = Figure(; backgroundcolor = backgroundcolor, size = size, figure...)
+    ax = Axis3(fig[1, 1], axis...)
     # 1. Set z floor to 0, leave upper limit as auto
     zlims!(ax, 0, nothing)
     pl = poincarehalfspaceplot!(ax, M; kwargs...)

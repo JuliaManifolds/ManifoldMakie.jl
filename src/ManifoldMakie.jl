@@ -9,6 +9,7 @@ using StaticArrays
 
 # Generic Recipes
 include("generic/geodesics.jl")
+include("generic/nonmutating.jl")
 
 include("circle.jl")
 include("hyperbolic/hyperboloid.jl")
@@ -27,4 +28,6 @@ export poincareballplot, poincareballplot!
 export poincarehalfspaceplot, poincarehalfspaceplot!
 export scattergeodesics, scattergeodesics!
 export sphereplot, sphereplot!
+
+
 end # module ManifoldMakie
