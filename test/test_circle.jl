@@ -14,19 +14,18 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
         scatter!(ax, M, pts; color = :green, markersize = 16)
         scatter!(ax, M, [r]; color = :orange, markersize = 16)
         @test_reference "img/circle/complex-scatter.png" fig
+
+        fig2, ax2, pl2 = scatter(M, pts; color = :green, markersize = 16)
+        @test_reference "img/circle/complex-scatter2.png" fig2
     end
     @testset "On the real circle" begin
         M = Manifolds.Circle(ℝ)
-        figax = Figure(M)
-        # temp until we have iterate on FigureAxis
-        fig = figax.figure
-        ax = figax.axis
 
         x = 0:0.25:5
         y = (mod.((x ./ 2) .^ 2 .- 0.4 .+ π, 2π)) .- π
         y2 = (mod.((x) .^ 2 .- 0.4 .+ π, 2π)) .- π
 
-        lines!(ax, M, y; color = :green)
+        fig, ax, pl = lines(M, y; color = :green)
         scatter!(ax, M, x, y2; color = :green)
         @test_reference "img/circle/real-scatter.png" fig
     end
