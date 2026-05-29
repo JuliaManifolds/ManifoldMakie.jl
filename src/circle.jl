@@ -108,7 +108,7 @@ end
 function circleplot(
         M::Manifolds.Circle{ℂ};
         size = (1024, 1024), backgroundcolor = :white, show_axis = false, aspect = Makie.DataAspect(),
-        axis = Dict{Symbol, Any}(),
+        axis = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(),
         kwargs...
     )
     fig = Figure(; backgroundcolor = backgroundcolor, size = size, kwargs...)
@@ -117,6 +117,7 @@ function circleplot(
         hidedecorations!(ax)
         hidespines!(ax)
     end
+    circleplot!(ax, M; plot...)
     return Makie.FigureAxis(fig, ax)
 end
 
@@ -161,13 +162,17 @@ function Makie.lines(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(),
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
 function Makie.scatter(M::Manifolds.Circle, args...; figure = Dict{Symbol, Any}(), kwargs...)
-    fig, ax = Figure(M; figure...)
-    pl = lines!(ax, M, args; kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = scatter!(ax, M, args...; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
-function Makie.arrows2d(M::Manifolds.Circle{ℂ}, args; figure = Dict{Symbol, Any}(), kwargs...)
-    fig, ax = Figure(M; figure...)
-    pl = scatter!(ax, M, args; kwargs...)
+function Makie.arrows2d(M::Manifolds.Circle{ℂ}, args...; figure = Dict{Symbol, Any}(), kwargs...)
+    fa = Figure(M; figure...)
+    fig = fa.figure
+    ax = fa.axis
+    pl = arrows2d!(ax, M, args...; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
 
