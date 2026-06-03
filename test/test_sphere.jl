@@ -16,7 +16,7 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
     end
     @testset "Plots on the 2-Sphere" begin
         M = Manifolds.Sphere(2)
-        s_fig = Figure(M).figure
+        s_fig, ax = Figure(M)
         @test_reference "img/sphere/sphere.png" s_fig
 
         p = [0.0, 0.0, 1.0]

@@ -210,9 +210,7 @@ function Makie.image(
         size = (1024, 1024), backgroundcolor = :white, aspect = Makie.DataAspect(),
         axis = Dict{Symbol, Any}(), figure = Dict{Symbol, Any}(), kwargs...
     )
-    fig_ax = circleimage(M; size = size, backgroundcolor = backgroundcolor, aspect = aspect, axis = axis, figure...)
-    fig = fig_ax.figure
-    ax = fig_ax.axis
+    fig, ax = circleimage(M; size = size, backgroundcolor = backgroundcolor, aspect = aspect, axis = axis, figure...)
     pl = image!(ax, M, args...; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end

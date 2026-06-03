@@ -12,8 +12,8 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 ManifoldMakie = {path = ".."}
 
 [compat]
-GLMakie = "0.13.10"
-Makie = "0.24"
+GLMakie = "0.13.11"
+Makie = "0.24.11"
 ManifoldMakie = "0.1.0"
 Manifolds = "0.11"
 ManoptExamples = "0.1.18"

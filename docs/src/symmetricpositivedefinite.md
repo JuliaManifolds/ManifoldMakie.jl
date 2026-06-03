@@ -29,7 +29,7 @@ we can scale that a bit up to obtain a slightly denser overall impression.
 using GLMakie, LinearAlgebra, ManifoldMakie, Manifolds, ManoptExamples
 M = SymmetricPositiveDefinite(3)
 data = ManoptExamples.artificial_SPD_image(64);
-image(M, data; scale_ev = 2.0, scale_mode = :relative, colorrange = [0,0.64])
+image(M, data; scale_ev = 1.75, scale_mode = :relative, colorrange = [0,0.64])
 ```
 
 ## Function Reference

@@ -48,9 +48,7 @@ function Makie.plot!(p::Geodesics{<:Tuple{AM, V}}) where {AM <: Manifolds.Abstra
 end
 
 function geodesics(M::Manifolds.AbstractManifold, args...; axis = Dict{Symbol, Any}(), figure = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M, eltype(first(args)); axis = axis, figure = figure, plot...)
-    fig = fa.figure
-    ax = fa.axis
+    fig, ax = Figure(M, eltype(first(args)); axis = axis, figure = figure, plot...)
     pl = geodesics!(ax, M, args...; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
@@ -121,9 +119,7 @@ function Makie.plot!(p::ScatterGeodesics{<:Tuple{AM, V}}) where {AM <: Manifolds
 end
 
 function scattergeodesics(M::Manifolds.AbstractManifold, args...; axis = Dict{Symbol, Any}(), figure = Dict{Symbol, Any}(), plot = Dict{Symbol, Any}(), kwargs...)
-    fa = Figure(M, eltype(first(args)); axis = axis, figure = figure, plot...)
-    fig = fa.figure
-    ax = fa.axis
+    fig, ax = Figure(M, eltype(first(args)); axis = axis, figure = figure, plot...)
     pl = scattergeodesics!(ax, M, args...; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end

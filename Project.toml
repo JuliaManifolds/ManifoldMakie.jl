@@ -1,6 +1,6 @@
 name = "ManifoldMakie"
 uuid = "9d80ff41-dd3c-46f9-b125-88bb271360e5"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Ronny Bergmann <git@ronnybergmann.net>"]
 
 [workspace]
@@ -16,7 +16,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 [compat]
 GeometryBasics = "0.5.10"
 LinearAlgebra = "1.10"
-Makie = "0.24"
+Makie = "0.24.11"
 Manifolds = "0.11"
 StaticArrays = "1.9.18"
 julia = "1.10"

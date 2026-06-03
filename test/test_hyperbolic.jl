@@ -47,26 +47,23 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
         vecs = [
             0.25 * log(M, pts[1], pts[2]), [log(M, p, pts[1]) for p in pts[2:end]]...,
         ]
-        fa = Figure(M, eltype(pts); surfacealpha = 0.5, surfaceboundary = 1)
-        fig = fa.figure
-        ax = fa.axis
+        fig, ax = Figure(M, eltype(pts); surfacealpha = 0.5, surfaceboundary = 1)
         scatter!(ax, M, pts; color = :blue, markersize = 8)
         arrows2d!(ax, M, pts, vecs; color = :green)
         geodesics!(ax, M, pts[2:end]; closed = true, color = :orange)
         @test_reference "img/hyperbolic/poincaredisc.png" fig
     end
     @testset "Poincare ball" begin
+
         M = Hyperbolic(3)
-        pts = PoincareBallPoint.([[0.0, 0.0, 0.0], [0.6, 0.6, 0.6], [-0.6, 0.6, 0.6], [-0.6, -0.6, 0.6], [-0.6, -0.6, -0.6], [-0.6, 0.6, -0.6], [0.6, 0.6, -0.6]])
+        pts = PoincareBallPoint.([[0.0, 0.0, 0.0], [0.5, 0.5, 0.5], [-0.5, 0.5, 0.5], [-0.5, -0.5, 0.5], [-0.5, -0.5, -0.5], [-0.5, 0.5, -0.5], [0.5, 0.5, -0.5]])
         vecs = [
-            log(M, pts[1], pts[2]), [log(M, p, pts[1]) for p in pts[2:end]]...,
+            0.25 .* log(M, pts[1], pts[2]), [log(M, p, pts[1]) for p in pts[2:end]]...,
         ]
-        fa = Figure(M, eltype(pts))
-        fig = fa.figure
-        ax = fa.axis
-        scatter!(ax, M, pts; color = :blue, markersize = 8)
+        fig, ax, pl = scatter(M, pts; color = :blue, markersize = 8)
         arrows3d!(ax, M, pts, vecs; color = :green)
         geodesics!(ax, M, pts[2:end]; closed = true, color = :orange)
+        ax.azimuth = 0
         @test_reference "img/hyperbolic/poincareball.png" fig
     end
     @testset "Poincare half plane" begin
@@ -76,9 +73,7 @@ using GLMakie, Manifolds, ManifoldMakie, ReferenceTests, Test
         vecs = [
             log(M, pts[1], PoincareHalfSpacePoint([0.0, 0.6])), [log(M, p, pts[1]) for p in pts[2:end]]...,
         ]
-        fa = Figure(M, eltype(pts))
-        fig = fa.figure
-        ax = fa.axis
+        fig, ax = Figure(M, eltype(pts))
         scatter!(ax, M, pts; color = :blue, markersize = 8)
         arrows2d!(ax, M, pts, vecs; color = :green)
         geodesics!(ax, M, pts; closed = true, color = :orange)
