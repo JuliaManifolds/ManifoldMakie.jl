@@ -39,18 +39,20 @@ for the cyclic data on ``𝕊^1`` embedded in ``ℝ^2``
 
 """
 @recipe SpherePlot (M,) begin
-    "Color of the wireframe lines drawn on top of the surface (``𝕊^2``)."
+    "color of the wireframe lines drawn on top of the surface (``𝕊^2``)."
     wirecolor = (:lightsteelblue, 0.4)
-    "Tessellation resolution (segments of the wireframe in every direction, ``𝕊^2``)."
+    "tessellation resolution (segments of the wireframe in every direction, ``𝕊^2``)."
     wires = 24
     "linewidth of the wire (``𝕊^2``)"
     wirewidth = 0.5
-    "Solid color of the surface (``𝕊^2``) or boundary (``𝕊^1``)."
+    "color of the surface (``𝕊^2``)"
     surfacecolor = :white
-    "Surface alpha (0 = transparent, 1 = opaque)."
+    "surface alpha (0 = transparent, 1 = opaque)."
     surfacealpha = 0.33
     "thickness of the boundary surface (only ``𝕊^1``)"
     surfaceboundary = 2
+    "color of the surface boundary (``𝕊^1``)"
+    surfaceboundarycolor = :black
     # add the other default plot attributes here as well
     Makie.mixin_generic_plot_attributes()...
 end
@@ -62,7 +64,7 @@ function Makie.plot!(p::SpherePlot{<:Tuple{Manifolds.Sphere{ℝ, Manifolds.TypeP
     map!(p.attributes, [:M], :circle) do M
         return GeometryBasics.Circle(Point2f(0, 0), 1.0f0)
     end
-    lines!(p, p.circle; color = p.surfacecolor, alpha = p.surfacealpha, linewidth = p.surfaceboundary)
+    lines!(p, p.circle; color = p.surfaceboundarycolor, alpha = p.surfacealpha, linewidth = p.surfaceboundary)
     return p
 end
 

@@ -43,9 +43,7 @@ using GLMakie, Manifolds, ManifoldMakie, ManoptExamples, ReferenceTests, Test
 
 
         # also works with ranges x and y
-        figax = circleimage(M)
-        fig = figax.figure
-        ax = figax.axis
+        fig, ax = circleimage(M)
         image!(ax, M, (1, 128), (1, 128), img)
         @test_reference "img/circle/image.png" fig
     end

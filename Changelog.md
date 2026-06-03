@@ -5,6 +5,14 @@ All notable Changes to the Julia package `ManifoldMakie.jl` are documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] June 3, 2026
+
+### Changed
+
+* for the cases, where a `FigureAxis` was returned, splatting is now possible and the code
+was simplified for this also in the docs.
+* introduce a `surfaceboundarycolor = :black` for the (1-) sphere to be distinguished from the `surfacecolor = :;white` used for the 2-sphere; both still respect `surfacealpha`.
+
 ## [0.1.1] May 29, 2026
 
 ### Added
