@@ -13,6 +13,7 @@ ManifoldMakie = {path = ".."}
 
 [compat]
 GLMakie = "0.13.11"
+LinearAlgebra = "1.10"
 Makie = "0.24.11"
 ManifoldMakie = "0.1.0"
 Manifolds = "0.11"
