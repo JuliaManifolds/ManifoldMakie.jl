@@ -19,3 +19,9 @@ function Makie.arrows3d(M::Manifolds.AbstractManifold, args...; figure = Dict{Sy
     pl = arrows3d!(ax, M, args...; kwargs...)
     return Makie.FigureAxisPlot(fig, ax, pl)
 end
+function Makie.arrows2d!(ax, M::Manifolds.AbstractManifold, args...; kwargs...)
+    return arrows2d!(ax, Makie.convert_arguments(Makie.ArrowLike(), M, args...)...; kwargs...)
+end
+function Makie.arrows3d!(ax, M::Manifolds.AbstractManifold, args...; kwargs...)
+    return arrows3d!(ax, Makie.convert_arguments(Makie.ArrowLike(), M, args...)...; kwargs...)
+end
