@@ -76,7 +76,7 @@ This plot recipe follows [`scatterlines`](@extref `Makie.scatterlines`) very clo
             :color, :colormap, :colorrange, :colorscale, :lowclip, :highclip, :alpha,
             :nan_color,
             :fxaa, :visible, :transparency, :space, :clip_planes, :ssao, :overdraw,
-            :cycle, :transformation, :model, :depth_shift,
+            :cycle, :transformation, :model, :depth_shift, :rasterize,
             :inspector_clear, :inspector_hover, :inspector_label, :inspectable,
         )
     )...
